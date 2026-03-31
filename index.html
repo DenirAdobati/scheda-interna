@@ -173,7 +173,7 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
 /* ── SCALE CLINICHE ── */
 .clinical-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; }
 .clinical-grid.ludwig-grid { grid-template-columns:1fr 1fr 1fr; }
-.clinical-grid.incidenze-grid { grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px; }
+.clinical-grid.incidenze-grid { grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; margin-bottom:8px; }
 .clinical-item {
   padding:14px 12px; border:2px solid var(--border); border-radius:var(--radius-sm);
   background:#fff; cursor:pointer; text-align:center; transition:all .13s;
@@ -187,7 +187,8 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
 .clinical-item.sel .ci-desc { color:#4B5563; }
 .ludwig-grid .ci-stage { font-size:14px; }
 .ludwig-grid .ci-desc { font-size:10px; }
-.incidenze-grid .ci-stage { font-size:13px; font-weight:700; margin-top:6px; margin-bottom:0; }
+.incidenze-grid .ci-stage { font-size:11px; font-weight:700; margin-top:4px; margin-bottom:0; }
+.incidenze-grid .clinical-item { padding:8px 6px; }
  
 /* ── TABELLA INCIDENZE DUE COLONNE ── */
 .incidenze-tab-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
