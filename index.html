@@ -766,8 +766,6 @@ function rPatologie() {
 // Mantieni per retrocompatibilità (non più usata)
 function rMatrixIncidenze() {
   return rIncidenze() + rPatologie();
-  html += `<div class="other-row"><span class="other-lbl">Altro:</span><input class="other-inp" type="text" value="${other}" placeholder="Specifica…" oninput="S.otherTxt['incid']=this.value"></div>`;
-  return html;
 }
  
 const NORWOOD_STAGES = [
@@ -807,7 +805,6 @@ function rLudwig(q) {
     html += `<div class="clinical-item${sel}" onclick="pickR(${q.id},'${escQ(s.stage)}')">
       <img src="${s.img}" alt="${s.label}" style="width: 100%; height: auto; border-radius: 4px; display: block;" referrerPolicy="no-referrer" />
       <div class="ci-stage">${s.label}</div>
-    </div>`;
     </div>`;
   });
   html += '</div>';
