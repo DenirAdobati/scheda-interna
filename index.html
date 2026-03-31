@@ -32,33 +32,35 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 .step-info { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.4); white-space: nowrap; }
  
 /* ── TIMELINE 5 FASI ── */
-.tl-wrap { padding: 0 14px 16px; overflow-x: hidden; }
-.tl-row { position: relative; }
+.tl-wrap { padding: 10px 14px 24px; overflow-x: hidden; }
+.tl-row { position: relative; max-width: 600px; margin: 0 auto; }
 .tl-progress-bg {
-  position: absolute; top: 6px; left: 10%; right: 10%; height: 4px;
-  background: rgba(255,255,255,.15); border-radius: 4px; z-index: 0;
+  position: absolute; top: 14px; left: 10%; right: 10%; height: 4px;
+  background: rgba(255,255,255,.1); border-radius: 4px; z-index: 0;
 }
 .tl-progress-fill {
   position: absolute; top: 0; left: 0; height: 100%;
   background: var(--gold); border-radius: 4px;
-  transition: width 0.4s ease; box-shadow: 0 0 8px rgba(234,179,8,.4);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px rgba(234,179,8,.4);
 }
-.tl-steps { display: flex; align-items: flex-start; position: relative; z-index: 1; }
+.tl-steps { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
 .tl-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; cursor: default; }
 .tl-dot {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--black); border: 3px solid rgba(255,255,255,.2);
-  position: relative; z-index: 1; flex-shrink: 0; transition: all .3s;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--dark); border: 2px solid rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: rgba(255,255,255,.5);
+  position: relative; z-index: 1; flex-shrink: 0; transition: all .4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.tl-item.done .tl-dot { border-color: var(--gold); background: var(--gold); }
-.tl-item.active .tl-dot { border-color: var(--gold); background: var(--black); box-shadow: 0 0 0 4px rgba(234,179,8,.2); }
+.tl-item.done .tl-dot { border-color: var(--gold); background: var(--gold); color: var(--black); }
+.tl-item.active .tl-dot { border-color: var(--gold); background: var(--black); color: var(--gold); box-shadow: 0 0 0 5px rgba(234,179,8,.15); transform: scale(1.15); }
 .tl-lbl {
-  font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em;
-  color: rgba(255,255,255,.3); margin-top: 8px; white-space: nowrap;
-  overflow: hidden; max-width: 100%; text-overflow: ellipsis; transition: all .3s;
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em;
+  color: rgba(255,255,255,.4); margin-top: 12px; white-space: nowrap;
+  overflow: hidden; max-width: 100%; text-overflow: ellipsis; transition: all .3s; text-align: center;
 }
-.tl-item.done .tl-lbl { color: rgba(255,255,255,.7); }
-.tl-item.active .tl-lbl { color: var(--gold); font-weight: 800; transform: scale(1.05); }
+.tl-item.done .tl-lbl { color: rgba(255,255,255,.8); }
+.tl-item.active .tl-lbl { color: var(--gold); font-weight: 800; transform: translateY(2px); }
  
 /* ── MAIN ── */
 .main { padding: 26px 18px 100px; max-width: 660px; margin: 0 auto; }
@@ -424,17 +426,18 @@ function renderTimeline() {
   if (!tl) return;
   
   let casoLabel = 'Caso';
-  if (S.casoTipo === 'uomo') casoLabel = '👨 Uomo';
-  else if (S.casoTipo === 'donna') casoLabel = '👩 Donna';
-  else if (S.casoTipo === 'mamma') casoLabel = '🤱 Mamma';
-  else if (S.casoTipo === 'menopausa') casoLabel = '👩‍🦳 Menopausa';
+  let casoIcon = '3';
+  if (S.casoTipo === 'uomo') { casoLabel = 'Uomo'; casoIcon = '👨'; }
+  else if (S.casoTipo === 'donna') { casoLabel = 'Donna'; casoIcon = '👩'; }
+  else if (S.casoTipo === 'mamma') { casoLabel = 'Mamma'; casoIcon = '🤱'; }
+  else if (S.casoTipo === 'menopausa') { casoLabel = 'Menopausa'; casoIcon = '👩‍🦳'; }
   
   const phases = [
-    { label: 'Conoscitiva', active: S.step === 'conoscitiva' },
-    { label: 'Indagine', active: S.step === 'indagine' },
-    { label: casoLabel, active: S.step === 'selector' || S.step === 'caso' },
-    { label: 'Visiva', active: S.step === 'visiva' },
-    { label: 'Fine', active: S.step === 'done' },
+    { label: 'Conoscitiva', icon: '1', active: S.step === 'conoscitiva' },
+    { label: 'Indagine', icon: '2', active: S.step === 'indagine' },
+    { label: casoLabel, icon: casoIcon, active: S.step === 'selector' || S.step === 'caso' },
+    { label: 'Visiva', icon: '4', active: S.step === 'visiva' },
+    { label: 'Fine', icon: '✓', active: S.step === 'done' },
   ];
   
   let currentIdx = phases.findIndex(p => p.active);
@@ -458,7 +461,13 @@ function renderTimeline() {
     let cls = 'tl-item';
     if (i < currentIdx) cls += ' done';
     if (i === currentIdx) cls += ' active';
-    html += `<div class="${cls}"><div class="tl-dot"></div><div class="tl-lbl">${p.label}</div></div>`;
+    
+    let iconContent = p.icon;
+    if (i < currentIdx && p.icon !== '✓' && !['👨','👩','🤱','👩‍🦳'].includes(p.icon)) {
+      iconContent = '✓';
+    }
+    
+    html += `<div class="${cls}"><div class="tl-dot">${iconContent}</div><div class="tl-lbl">${p.label}</div></div>`;
   });
   html += `</div>`;
   tl.innerHTML = html;
@@ -725,23 +734,21 @@ function rMatrixIncidenze() {
 }
  
 const NORWOOD_STAGES = [
-  { stage:'I',    label:'Stadio I',    desc:'Attaccatura intatta, nessuna recessione' },
-  { stage:'II',   label:'Stadio II',   desc:'Leggera recessione sulle tempie' },
-  { stage:'III',  label:'Stadio III',  desc:'Recessione temporale pronunciata' },
-  { stage:'IIIv', label:'Stadio IIIv', desc:'Perdita al vertice con tempie intatte' },
-  { stage:'IV',   label:'Stadio IV',   desc:'Forte recessione + inizio calvizie al vertice' },
-  { stage:'V',    label:'Stadio V',    desc:'Zona frontale e vertice quasi unite' },
-  { stage:'VI',   label:'Stadio VI',   desc:'Fronte e vertice si uniscono' },
-  { stage:'VII',  label:'Stadio VII',  desc:'Solo fascia laterale e occipitale rimane' },
+  { stage:'I',    img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+I' },
+  { stage:'II',   img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+II' },
+  { stage:'III',  img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+III' },
+  { stage:'IIIv', img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+IIIv' },
+  { stage:'IV',   img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+IV' },
+  { stage:'V',    img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+V' },
+  { stage:'VI',   img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+VI' },
+  { stage:'VII',  img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+VII' },
 ];
 function rNorwood(q) {
   let html = '<div class="clinical-grid">';
   NORWOOD_STAGES.forEach(s => {
     const sel = S.answers[q.id] === s.stage ? ' sel' : '';
     html += `<div class="clinical-item${sel}" onclick="pickR(${q.id},'${escQ(s.stage)}')">
-      <div class="ci-stage">${s.stage}</div>
-      <div class="ci-label">${s.label}</div>
-      <div class="ci-desc">${s.desc}</div>
+      <img src="${s.img}" alt="Stadio ${s.stage}" style="width: 100%; height: auto; border-radius: 4px; display: block;" referrerPolicy="no-referrer" />
     </div>`;
   });
   html += '</div>';
