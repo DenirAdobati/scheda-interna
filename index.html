@@ -189,6 +189,34 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
 .ludwig-grid .ci-desc { font-size:10px; }
 .incidenze-grid .ci-stage { font-size:13px; font-weight:700; margin-top:6px; margin-bottom:0; }
  
+/* ── TABELLA INCIDENZE DUE COLONNE ── */
+.incidenze-tab-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.incidenze-col { display:flex; flex-direction:column; gap:6px; }
+.incidenze-col-header {
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+  padding:8px 12px; border-radius:8px; text-align:center; margin-bottom:4px;
+}
+.incidenze-col-header.blu { background:#DBEAFE; color:#1E40AF; }
+.incidenze-col-header.rosso { background:#FEE2E2; color:#991B1B; }
+.incidenze-item {
+  display:flex; align-items:center; gap:8px;
+  padding:10px 12px; border:2px solid var(--border); border-radius:10px;
+  background:#fff; cursor:pointer; text-align:left; width:100%;
+  font-family:'Inter',sans-serif; font-size:12px; font-weight:500; color:var(--dark);
+  transition:all .13s; -webkit-user-select:none; user-select:none;
+}
+.incidenze-item:active { transform:scale(.98); }
+.incidenze-dot {
+  width:14px; height:14px; border-radius:4px; flex-shrink:0;
+  border:2px solid var(--border); transition:all .13s;
+}
+.incidenze-item.blu .incidenze-dot { border-color:#93C5FD; background:#EFF6FF; }
+.incidenze-item.rosso .incidenze-dot { border-color:#FCA5A5; background:#FEF2F2; }
+.incidenze-item.blu.sel { border-color:#3B82F6; background:#DBEAFE; }
+.incidenze-item.blu.sel .incidenze-dot { background:#3B82F6; border-color:#3B82F6; }
+.incidenze-item.rosso.sel { border-color:#EF4444; background:#FEE2E2; }
+.incidenze-item.rosso.sel .incidenze-dot { background:#EF4444; border-color:#EF4444; }
+ 
 /* ── CASO SPECIFICO SELECTOR ── */
 .caso-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .caso-btn {
@@ -363,7 +391,8 @@ const Q_VISIVA = [
   { id:114, sec:'Fase Visiva e Tattile', q:'Caratteristiche dei capelli', type:'check-other', opts:['Secchi','Grassi','Fragili','Spenti','Privi di volume','Con doppie punte','Trattati chimicamente'] },
   { id:115, sec:'Fase Visiva e Tattile', q:'Tipo di incidenza', type:'incidenze-visive' },
   { id:116, sec:'Fase Visiva e Tattile', q:'Patologie riscontrate', type:'patologie-check' },
-  { id:117, sec:'Fase Visiva e Tattile', q:'Note finali', type:'textarea' },
+  { id:117, sec:'Fase Visiva e Tattile', q:'Tipo di incidenze — dettaglio', type:'incidenze-tabella' },
+  { id:118, sec:'Fase Visiva e Tattile', q:'Note finali', type:'textarea' },
 ];
  
 // ═══════════════════════════════════════
@@ -378,6 +407,7 @@ let S = {
   otherTxt: {},
   gravity: {},
   incidenze: new Set(),
+  incidenzeTab: new Set(),
 };
  
 // Domande attive in base allo step
@@ -391,7 +421,11 @@ function getActiveQuestions() {
       if (S.casoTipo === 'mamma') return Q_MAMMA;
       if (S.casoTipo === 'menopausa') return Q_MENOPAUSA;
       return [];
-    case 'visiva': return Q_VISIVA;
+    case 'visiva': 
+      // Nascondi Ludwig (id:101) per uomo, nascondi Norwood (id:100) per donne
+      if (S.casoTipo === 'uomo') return Q_VISIVA.filter(q => q.id !== 101);
+      if (S.casoTipo === 'donna' || S.casoTipo === 'mamma' || S.casoTipo === 'menopausa') return Q_VISIVA.filter(q => q.id !== 100);
+      return Q_VISIVA;
     default: return [];
   }
 }
@@ -409,9 +443,17 @@ function getCasoLength() {
   return 6;
 }
  
+function getVisivaLength() {
+  // Ludwig esclusa per uomo, Norwood esclusa per donne
+  if (S.casoTipo === 'uomo') return Q_VISIVA.length - 1;
+  if (S.casoTipo === 'donna' || S.casoTipo === 'mamma' || S.casoTipo === 'menopausa') return Q_VISIVA.length - 1;
+  return Q_VISIVA.length;
+}
+ 
 function globalProgress() {
   let done = 0;
   let casoLen = S.casoTipo ? getCasoLength() : 6;
+  let visivaLen = getVisivaLength();
   
   if (S.step === 'conoscitiva') done = S.qIdx;
   else if (S.step === 'indagine') done = Q_CONOSCITIVA.length + S.qIdx;
@@ -420,7 +462,7 @@ function globalProgress() {
   else if (S.step === 'visiva') done = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + S.qIdx;
   else if (S.step === 'done') return 'Completato';
   
-  const total = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + Q_VISIVA.length;
+  const total = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + visivaLen;
   return (done + 1) + ' / ' + total;
 }
  
@@ -450,15 +492,16 @@ function renderTimeline() {
   
   let done = 0;
   let casoLen = S.casoTipo ? getCasoLength() : 6;
+  let visivaLen = getVisivaLength();
   
   if (S.step === 'conoscitiva') done = S.qIdx;
   else if (S.step === 'indagine') done = Q_CONOSCITIVA.length + S.qIdx;
   else if (S.step === 'selector') done = Q_CONOSCITIVA.length + Q_INDAGINE.length;
   else if (S.step === 'caso') done = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + S.qIdx;
   else if (S.step === 'visiva') done = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + S.qIdx;
-  else if (S.step === 'done') done = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + Q_VISIVA.length;
+  else if (S.step === 'done') done = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + visivaLen;
   
-  const total = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + Q_VISIVA.length;
+  const total = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + visivaLen;
   const progressPercent = Math.min(100, Math.max(0, (done / total) * 100));
   
   let html = `<div class="tl-progress-bg"><div class="tl-progress-fill" style="width: ${progressPercent}%"></div></div>`;
@@ -642,6 +685,7 @@ function renderInput(q) {
     case 'matrix-incidenze':return rMatrixIncidenze();
     case 'incidenze-visive':return rIncidenze();
     case 'patologie-check': return rPatologie();
+    case 'incidenze-tabella':return rIncidenzeTabella();
     case 'norwood':         return rNorwood(q);
     case 'ludwig':          return rLudwig(q);
     default: return '';
@@ -768,6 +812,56 @@ function rMatrixIncidenze() {
   return rIncidenze() + rPatologie();
 }
  
+// Tabella incidenze con due colonne (Rosso a destra, Blu a sinistra)
+const INCIDENZE_DETTAGLIO = [
+  { label: 'Vertice posteriore', col: 'rosso' },
+  { label: 'Generalmente diffuso', col: 'blu' },
+  { label: 'Cuoio capelluto iperlipidico', col: 'rosso' },
+  { label: 'Cuoio capelluto sottile', col: 'blu' },
+  { label: 'Cuoio capelluto spesso', col: 'rosso' },
+  { label: 'Cuoio capelluto grigiastro', col: 'blu' },
+  { label: 'Cuoio capelluto mobile', col: 'rosso' },
+  { label: 'Localizzazione del prurito zona superiore', col: 'blu' },
+  { label: 'Cuoio capelluto rosato', col: 'rosso' },
+  { label: 'Odore cuoio capelluto ammoniacale', col: 'blu' },
+  { label: 'Forfora grassa', col: 'rosso' },
+  { label: 'Sudorazione intensa', col: 'blu' },
+  { label: 'Odore cuoio capelluto rancido', col: 'rosso' },
+  { label: 'Capelli fini', col: 'blu' },
+  { label: 'Capelli grossi', col: 'rosso' },
+];
+ 
+function rIncidenzeTabella() {
+  if (!S.incidenzeTab) S.incidenzeTab = new Set();
+  
+  let html = '<div class="incidenze-tab-grid">';
+  
+  // Colonna BLU (sinistra)
+  html += '<div class="incidenze-col incidenze-col-blu">';
+  html += '<div class="incidenze-col-header blu">Incidenza Blu</div>';
+  INCIDENZE_DETTAGLIO.filter(i => i.col === 'blu').forEach(i => {
+    const sel = S.incidenzeTab.has(i.label) ? ' sel' : '';
+    html += `<button class="incidenze-item blu${sel}" onclick="toggleIncidTab('${escQ(i.label)}')">
+      <span class="incidenze-dot"></span>${i.label}
+    </button>`;
+  });
+  html += '</div>';
+  
+  // Colonna ROSSA (destra)
+  html += '<div class="incidenze-col incidenze-col-rosso">';
+  html += '<div class="incidenze-col-header rosso">Incidenza Rossa</div>';
+  INCIDENZE_DETTAGLIO.filter(i => i.col === 'rosso').forEach(i => {
+    const sel = S.incidenzeTab.has(i.label) ? ' sel' : '';
+    html += `<button class="incidenze-item rosso${sel}" onclick="toggleIncidTab('${escQ(i.label)}')">
+      <span class="incidenze-dot"></span>${i.label}
+    </button>`;
+  });
+  html += '</div>';
+  
+  html += '</div>';
+  return html;
+}
+ 
 const NORWOOD_STAGES = [
   { stage:'I',    img:'img/norwood-1.png' },
   { stage:'II',   img:'img/norwood-2.png' },
@@ -858,8 +952,13 @@ function pickIncidTipo(val) {
   else S.answers['incid_tipo'] = val;
   render();
 }
+function toggleIncidTab(val) {
+  if (S.incidenzeTab.has(val)) S.incidenzeTab.delete(val);
+  else S.incidenzeTab.add(val);
+  render();
+}
 function resetForm() {
-  S = { step:'conoscitiva', qIdx:0, casoTipo:null, answers:{}, checkAns:{}, otherTxt:{}, gravity:{}, incidenze:new Set() };
+  S = { step:'conoscitiva', qIdx:0, casoTipo:null, answers:{}, checkAns:{}, otherTxt:{}, gravity:{}, incidenze:new Set(), incidenzeTab:new Set() };
   document.getElementById('navFooter').style.display = '';
   render();
 }
