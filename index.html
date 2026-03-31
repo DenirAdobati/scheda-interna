@@ -32,29 +32,33 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 .step-info { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.4); white-space: nowrap; }
  
 /* ── TIMELINE 5 FASI ── */
-.tl-wrap { padding: 0 14px 11px; overflow-x: hidden; }
-.tl-row { display: flex; align-items: flex-start; position: relative; }
+.tl-wrap { padding: 0 14px 16px; overflow-x: hidden; }
+.tl-row { position: relative; }
+.tl-progress-bg {
+  position: absolute; top: 6px; left: 10%; right: 10%; height: 4px;
+  background: rgba(255,255,255,.15); border-radius: 4px; z-index: 0;
+}
+.tl-progress-fill {
+  position: absolute; top: 0; left: 0; height: 100%;
+  background: var(--gold); border-radius: 4px;
+  transition: width 0.4s ease; box-shadow: 0 0 8px rgba(234,179,8,.4);
+}
+.tl-steps { display: flex; align-items: flex-start; position: relative; z-index: 1; }
 .tl-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; cursor: default; }
-.tl-item:not(:last-child)::after {
-  content: ''; position: absolute; top: 4px; left: calc(50% + 6px);
-  right: calc(-50% + 6px); height: 2px;
-  background: rgba(255,255,255,.1); z-index: 0;
-}
-.tl-item.done:not(:last-child)::after { background: rgba(234,179,8,.4); }
 .tl-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: rgba(255,255,255,.15); position: relative; z-index: 1;
-  flex-shrink: 0; transition: all .3s;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--black); border: 3px solid rgba(255,255,255,.2);
+  position: relative; z-index: 1; flex-shrink: 0; transition: all .3s;
 }
-.tl-item.done  .tl-dot { background: rgba(234,179,8,.5); }
-.tl-item.active .tl-dot { background: var(--gold); box-shadow: 0 0 0 3px rgba(234,179,8,.25); width: 12px; height: 12px; margin-top: -1px; }
+.tl-item.done .tl-dot { border-color: var(--gold); background: var(--gold); }
+.tl-item.active .tl-dot { border-color: var(--gold); background: var(--black); box-shadow: 0 0 0 4px rgba(234,179,8,.2); }
 .tl-lbl {
-  font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
-  color: rgba(255,255,255,.22); margin-top: 5px; white-space: nowrap;
-  overflow: hidden; max-width: 100%; text-overflow: ellipsis; transition: color .3s;
+  font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em;
+  color: rgba(255,255,255,.3); margin-top: 8px; white-space: nowrap;
+  overflow: hidden; max-width: 100%; text-overflow: ellipsis; transition: all .3s;
 }
-.tl-item.done  .tl-lbl { color: rgba(234,179,8,.4); }
-.tl-item.active .tl-lbl { color: var(--gold); font-weight: 700; }
+.tl-item.done .tl-lbl { color: rgba(255,255,255,.7); }
+.tl-item.active .tl-lbl { color: var(--gold); font-weight: 800; transform: scale(1.05); }
  
 /* ── MAIN ── */
 .main { padding: 26px 18px 100px; max-width: 660px; margin: 0 auto; }
@@ -419,23 +423,44 @@ function renderTimeline() {
   const tl = document.getElementById('timeline');
   if (!tl) return;
   
+  let casoLabel = 'Caso';
+  if (S.casoTipo === 'uomo') casoLabel = '👨 Uomo';
+  else if (S.casoTipo === 'donna') casoLabel = '👩 Donna';
+  else if (S.casoTipo === 'mamma') casoLabel = '🤱 Mamma';
+  else if (S.casoTipo === 'menopausa') casoLabel = '👩‍🦳 Menopausa';
+  
   const phases = [
     { label: 'Conoscitiva', active: S.step === 'conoscitiva' },
     { label: 'Indagine', active: S.step === 'indagine' },
-    { label: 'Caso', active: S.step === 'selector' || S.step === 'caso' },
+    { label: casoLabel, active: S.step === 'selector' || S.step === 'caso' },
     { label: 'Visiva', active: S.step === 'visiva' },
     { label: 'Fine', active: S.step === 'done' },
   ];
   
   let currentIdx = phases.findIndex(p => p.active);
   
-  let html = '';
+  let done = 0;
+  let casoLen = S.casoTipo ? getCasoLength() : 6;
+  
+  if (S.step === 'conoscitiva') done = S.qIdx;
+  else if (S.step === 'indagine') done = Q_CONOSCITIVA.length + S.qIdx;
+  else if (S.step === 'selector') done = Q_CONOSCITIVA.length + Q_INDAGINE.length;
+  else if (S.step === 'caso') done = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + S.qIdx;
+  else if (S.step === 'visiva') done = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + S.qIdx;
+  else if (S.step === 'done') done = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + Q_VISIVA.length;
+  
+  const total = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + Q_VISIVA.length;
+  const progressPercent = Math.min(100, Math.max(0, (done / total) * 100));
+  
+  let html = `<div class="tl-progress-bg"><div class="tl-progress-fill" style="width: ${progressPercent}%"></div></div>`;
+  html += `<div class="tl-steps">`;
   phases.forEach((p, i) => {
     let cls = 'tl-item';
     if (i < currentIdx) cls += ' done';
     if (i === currentIdx) cls += ' active';
     html += `<div class="${cls}"><div class="tl-dot"></div><div class="tl-lbl">${p.label}</div></div>`;
   });
+  html += `</div>`;
   tl.innerHTML = html;
 }
  
@@ -794,4 +819,3 @@ render();
 </script>
 </body>
 </html>
- 
