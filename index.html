@@ -23,15 +23,15 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
 body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--black); }
-
+ 
 /* ── HEADER ── */
 .header { position: sticky; top: 0; z-index: 100; background: var(--black); }
 .header-top { display: flex; align-items: center; justify-content: space-between; padding: 13px 20px 10px; }
 .logo { font-size: 19px; font-weight: 800; color: #fff; letter-spacing: .07em; }
 .logo span { color: var(--gold); }
 .step-info { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.4); white-space: nowrap; }
-
-/* ── TIMELINE 13 FASI ── */
+ 
+/* ── TIMELINE 5 FASI ── */
 .tl-wrap { padding: 0 14px 11px; overflow-x: hidden; }
 .tl-row { display: flex; align-items: flex-start; position: relative; }
 .tl-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; cursor: default; }
@@ -49,16 +49,16 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 .tl-item.done  .tl-dot { background: rgba(234,179,8,.5); }
 .tl-item.active .tl-dot { background: var(--gold); box-shadow: 0 0 0 3px rgba(234,179,8,.25); width: 12px; height: 12px; margin-top: -1px; }
 .tl-lbl {
-  font-size: 7.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+  font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
   color: rgba(255,255,255,.22); margin-top: 5px; white-space: nowrap;
   overflow: hidden; max-width: 100%; text-overflow: ellipsis; transition: color .3s;
 }
 .tl-item.done  .tl-lbl { color: rgba(234,179,8,.4); }
 .tl-item.active .tl-lbl { color: var(--gold); font-weight: 700; }
-
+ 
 /* ── MAIN ── */
 .main { padding: 26px 18px 100px; max-width: 660px; margin: 0 auto; }
-
+ 
 /* ── SECTION BADGE ── */
 .sec-badge {
   display: inline-flex; align-items: center;
@@ -66,18 +66,18 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
   font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
   padding: 4px 12px; border-radius: 100px; margin-bottom: 13px;
 }
-
+ 
 /* ── CARD ── */
 .q-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 26px 22px; animation: fadeUp .22s ease both; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 .q-num  { font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px; }
 .q-text { font-size: 18px; font-weight: 700; line-height: 1.4; margin-bottom: 20px; }
-
+ 
 /* ── OPTIONS ── */
 .opts       { display: flex; flex-direction: column; gap: 8px; }
 .opts-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .opts-grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-
+ 
 .opt {
   display: flex; align-items: center; gap: 11px;
   padding: 12px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm);
@@ -89,7 +89,7 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 }
 .opt:active { transform: scale(.98); }
 .opt.sel { border-color: var(--gold); background: var(--gold-light); color: var(--black); font-weight: 600; }
-
+ 
 .opt-radio {
   width: 19px; height: 19px; border-radius: 50%; border: 2px solid var(--border);
   flex-shrink: 0; position: relative; transition: all .13s;
@@ -97,38 +97,38 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 }
 .opt.sel .opt-radio { background: var(--gold); border-color: var(--gold); }
 .opt.sel .opt-radio::after { content:''; width:7px; height:7px; border-radius:50%; background:#fff; }
-
+ 
 .opt-check {
   width: 19px; height: 19px; border-radius: 5px; border: 2px solid var(--border);
   flex-shrink: 0; transition: all .13s; display: flex; align-items: center; justify-content: center;
 }
 .opt.sel .opt-check { background: var(--gold); border-color: var(--gold); }
 .opt.sel .opt-check::after { content:'✓'; font-size:11px; font-weight:800; color:#fff; }
-
+ 
 /* Grid: center, hide indicator */
 .opts-grid2 .opt, .opts-grid3 .opt {
   justify-content: center; text-align: center;
   flex-direction: column; gap: 3px; padding: 14px 6px;
 }
 .opts-grid2 .opt .opt-radio, .opts-grid3 .opt .opt-radio { display: none; }
-
+ 
 /* ── COLORI SPECIALI ── */
 .opt-si      { border-color: #86EFAC; color: #166534; }
 .opt-si.sel  { border-color: #22C55E; background: #DCFCE7; color: #15803D; }
 .opt-si.sel  .opt-radio, .opt-si.sel .opt-check { background:#22C55E; border-color:#22C55E; }
-
+ 
 .opt-no      { border-color: #FCA5A5; color: #991B1B; }
 .opt-no.sel  { border-color: #EF4444; background: #FEE2E2; color: #B91C1C; }
 .opt-no.sel  .opt-radio, .opt-no.sel .opt-check { background:#EF4444; border-color:#EF4444; }
-
+ 
 .opt-maschio      { border-color: #93C5FD; color: #1E40AF; }
 .opt-maschio.sel  { border-color: #3B82F6; background: #DBEAFE; color: #1D4ED8; }
 .opt-maschio.sel  .opt-radio { background:#3B82F6; border-color:#3B82F6; }
-
+ 
 .opt-femmina      { border-color: #F9A8D4; color: #9D174D; }
 .opt-femmina.sel  { border-color: #EC4899; background: #FCE7F3; color: #BE185D; }
 .opt-femmina.sel  .opt-radio { background:#EC4899; border-color:#EC4899; }
-
+ 
 /* ── NAME INPUTS ── */
 .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
 .inp-group label { display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--gray); margin-bottom:6px; }
@@ -140,20 +140,20 @@ input[type=text], textarea {
 }
 input[type=text]:focus, textarea:focus { border-color:var(--gold); }
 textarea { min-height:100px; resize:vertical; font-size:14px; }
-
+ 
 /* ── SCALE ── */
 .scale-wrap { display:flex; flex-direction:column; gap:11px; }
 .scale-ends { display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:var(--gray); text-transform:uppercase; letter-spacing:.06em; }
 .scale-btns { display:flex; gap:5px; }
 .scale-btn  { flex:1; padding:13px 3px; border:2px solid var(--border); border-radius:var(--radius-sm); background:#fff; font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:var(--gray); cursor:pointer; text-align:center; transition:all .13s; }
 .scale-btn.sel { background:var(--gold); border-color:var(--gold); color:var(--black); }
-
+ 
 /* ── OTHER ── */
 .other-row  { display:flex; align-items:center; gap:9px; margin-top:9px; }
 .other-lbl  { font-size:13px; font-weight:600; color:var(--gray); white-space:nowrap; }
 .other-inp  { flex:1; padding:10px 13px; border:2px solid var(--border); border-radius:10px; font-family:'Inter',sans-serif; font-size:14px; background:#fff; outline:none; transition:border-color .13s; }
 .other-inp:focus { border-color:var(--gold); }
-
+ 
 /* ── MATRIX ── */
 .mx-scroll { overflow-x:auto; }
 .mx-table  { width:100%; border-collapse:separate; border-spacing:0; }
@@ -163,7 +163,7 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
 .mx-table td:first-child { text-align:left; font-size:13px; font-weight:500; padding-right:10px; white-space:nowrap; }
 .mx-dot { width:26px; height:26px; border-radius:50%; border:2px solid var(--border); cursor:pointer; margin:0 auto; transition:all .13s; }
 .mx-dot.sel { background:var(--gold); border-color:var(--gold); }
-
+ 
 /* ── SCALE CLINICHE ── */
 .clinical-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
 .clinical-item {
@@ -177,14 +177,30 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
 .clinical-item .ci-label { font-size:13px; font-weight:600; color:var(--dark); margin-bottom:3px; }
 .clinical-item .ci-desc  { font-size:11px; color:var(--gray); line-height:1.4; }
 .clinical-item.sel .ci-desc { color:#4B5563; }
-
-/* ── TAGS ── */
-.tags-wrap { display:flex; gap:9px; flex-wrap:wrap; }
-.tag { padding:10px 22px; border:2px solid var(--border); border-radius:100px; background:#fff; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; color:var(--dark); cursor:pointer; transition:all .13s; }
-.tag.sel-todo { background:#FEF9C3; border-color:#EAB308; color:#78350F; }
-.tag.sel-prog { background:#DBEAFE; border-color:#3B82F6; color:#1E40AF; }
-.tag.sel-done { background:#DCFCE7; border-color:#22C55E; color:#14532D; }
-
+ 
+/* ── CASO SPECIFICO SELECTOR ── */
+.caso-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.caso-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 28px 16px; border: 3px solid var(--border); border-radius: var(--radius);
+  background: #fff; cursor: pointer; transition: all .15s;
+  min-height: 120px;
+}
+.caso-btn:active { transform: scale(.97); }
+.caso-btn.sel { border-color: var(--gold); background: var(--gold-light); }
+.caso-btn .caso-icon { font-size: 36px; margin-bottom: 10px; }
+.caso-btn .caso-label { font-size: 14px; font-weight: 700; color: var(--dark); text-transform: uppercase; letter-spacing: .05em; text-align: center; }
+.caso-btn.sel .caso-label { color: var(--black); }
+ 
+.caso-btn.uomo { border-color: #93C5FD; }
+.caso-btn.uomo:active, .caso-btn.uomo.sel { border-color: #3B82F6; background: #DBEAFE; }
+.caso-btn.donna { border-color: #F9A8D4; }
+.caso-btn.donna:active, .caso-btn.donna.sel { border-color: #EC4899; background: #FCE7F3; }
+.caso-btn.mamma { border-color: #A5B4FC; }
+.caso-btn.mamma:active, .caso-btn.mamma.sel { border-color: #6366F1; background: #E0E7FF; }
+.caso-btn.menopausa { border-color: #C4B5FD; }
+.caso-btn.menopausa:active, .caso-btn.menopausa.sel { border-color: #8B5CF6; background: #EDE9FE; }
+ 
 /* ── COMPLETION ── */
 .done-card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:46px 26px; text-align:center; animation:fadeUp .3s ease both; }
 .done-icon { width:74px; height:74px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 22px; font-size:32px; }
@@ -193,19 +209,20 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
 .done-btns { display:flex; gap:9px; justify-content:center; flex-wrap:wrap; }
 .btn-gold { padding:14px 30px; background:var(--gold); border:none; border-radius:var(--radius-sm); font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:var(--black); cursor:pointer; }
 .btn-dark { padding:14px 30px; background:var(--black); border:none; border-radius:var(--radius-sm); font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:#fff; cursor:pointer; }
-
+ 
 /* ── FOOTER NAV ── */
 .nav-footer { position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,.95); backdrop-filter:blur(12px); border-top:1px solid var(--border); padding:13px 18px 20px; z-index:100; }
 .nav-inner  { display:flex; gap:9px; max-width:660px; margin:0 auto; }
 .btn-back { padding:14px 18px; border:2px solid var(--border); border-radius:var(--radius-sm); background:#fff; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; color:var(--gray); cursor:pointer; white-space:nowrap; transition:all .13s; }
 .btn-back:disabled { opacity:.3; cursor:not-allowed; }
 .btn-next { flex:1; padding:14px; background:var(--gold); border:none; border-radius:var(--radius-sm); font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:var(--black); cursor:pointer; transition:all .13s; }
-
+ 
 @media (max-width:600px) {
   .name-row { grid-template-columns:1fr; }
   .opts-grid3 { grid-template-columns:1fr 1fr; }
   .q-text { font-size:16px; }
   .clinical-grid { grid-template-columns:1fr 1fr; }
+  .caso-selector { grid-template-columns: 1fr; }
 }
 @media print {
   .header, .nav-footer { display:none !important; }
@@ -218,14 +235,14 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
 <div id="app">
   <header class="header">
     <div class="header-top">
-      <div class="logo">BEAU<span>TRI</span></div>
+      <div class="logo">BEAU<span>TRÌ</span></div>
       <div class="step-info" id="stepInfo">1 / 74</div>
     </div>
     <div class="tl-wrap"><div class="tl-row" id="timeline"></div></div>
   </header>
-
+ 
   <main class="main" id="main"></main>
-
+ 
   <footer class="nav-footer" id="navFooter">
     <div class="nav-inner">
       <button class="btn-back" id="btnBack" onclick="goBack()">← Indietro</button>
@@ -233,187 +250,263 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
     </div>
   </footer>
 </div>
-
+ 
 <script>
 // ═══════════════════════════════════════
-// FASI (per timeline)
+// TUTTE LE DOMANDE
 // ═══════════════════════════════════════
-const PHASES = [
-  { id:1,  label:'Anagrafici',  qids:[1,2,3,4,5,6] },
-  { id:2,  label:'Igiene',      qids:[7,8,9] },
-  { id:3,  label:'Salute',      qids:[10,11] },
-  { id:4,  label:'Cute',        qids:[12,13,14,15,16] },
-  { id:5,  label:'Sonno',       qids:[17,18,19,20,21,22] },
-  { id:6,  label:'Stress',      qids:[23,24,25,26,27] },
-  { id:7,  label:'Familiarità', qids:[28,29,30] },
-  { id:8,  label:'Abitudini',   qids:[31,32,33,34] },
-  { id:9,  label:'Donna',       qids:[35,36,37,38,39,40,41] },
-  { id:10, label:'Mamme',       qids:[42,43,44,45,46,47] },
-  { id:11, label:'Menopausa',   qids:[48,49,50,51,52,53,54,55,56] },
-  { id:12, label:'Scale',       qids:[57,58] },
-  { id:13, label:'Osservazioni',qids:[59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74] },
+ 
+// ── FASE 1 – CONOSCITIVA (Q1-Q9) ──
+const Q_CONOSCITIVA = [
+  { id:1, sec:'Fase Conoscitiva', q:'Qual è il tuo nome?', type:'name' },
+  { id:2, sec:'Fase Conoscitiva', q:'Sesso', type:'radio', opts:['Maschio','Femmina'] },
+  { id:3, sec:'Fase Conoscitiva', q:'Età', type:'radio-grid2', opts:['0–10 anni','10–20 anni','20–30 anni','30–40 anni','40–50 anni','50–60 anni','> 60 anni'] },
+  { id:4, sec:'Fase Conoscitiva', q:'Altezza', type:'radio-grid3', opts:['< 150 cm','150–160 cm','160–170 cm','170–180 cm','180–190 cm','> 190 cm'] },
+  { id:5, sec:'Fase Conoscitiva', q:'Peso', type:'radio-grid3', opts:['< 50 kg','50–60 kg','60–70 kg','70–80 kg','80–90 kg','90–100 kg','> 100 kg'] },
+  { id:6, sec:'Fase Conoscitiva', q:'Anamnesi personale', type:'check-other', opts:['Attività sportiva'] },
+  { id:7, sec:'Fase Conoscitiva', q:'Quante volte lavi i capelli a settimana?', type:'radio', opts:['Tutti i giorni e spesso 2 volte al giorno','Tutti i giorni','Una volta ogni 2 giorni','2 volte a settimana','Una volta a settimana'] },
+  { id:8, sec:'Fase Conoscitiva', q:'Quando hai lavato l\'ultima volta i capelli?', type:'radio-grid2', opts:['Oggi','Ieri','2 giorni fa','Più di 2 giorni fa'] },
+  { id:9, sec:'Fase Conoscitiva', q:'Che prodotti utilizzi di solito?', type:'radio', opts:['Prodotti generici comprati al supermercato','Prodotti specifici comprati in farmacia','Prodotti specifici comprati in salone / negozi specializzati'] },
 ];
-
-// ═══════════════════════════════════════
-// DOMANDE (74)
-// ═══════════════════════════════════════
-const QS = [
-  // ── FASE 1 – DATI ANAGRAFICI ──
-  { id:1,  ph:1, sec:'Dati Anagrafici', q:'Qual è il tuo nome?', type:'name' },
-  { id:2,  ph:1, sec:'Dati Anagrafici', q:'Sesso', type:'radio', opts:['Maschio','Femmina'] },
-  { id:3,  ph:1, sec:'Dati Anagrafici', q:'Età', type:'radio-grid2', opts:['0–10 anni','10–20 anni','20–30 anni','30–40 anni','40–50 anni','50–60 anni','> 60 anni'] },
-  { id:4,  ph:1, sec:'Dati Anagrafici', q:'Altezza', type:'radio-grid3', opts:['< 150 cm','150–160 cm','160–170 cm','170–180 cm','180–190 cm','> 190 cm'] },
-  { id:5,  ph:1, sec:'Dati Anagrafici', q:'Peso', type:'radio-grid3', opts:['< 50 kg','50–60 kg','60–70 kg','70–80 kg','80–90 kg','90–100 kg','> 100 kg'] },
-  { id:6,  ph:1, sec:'Dati Anagrafici', q:'Anamnesi personale', type:'check-other', opts:['Attività asportiva'] },
-
-  // ── FASE 2 – IGIENE ──
-  { id:7,  ph:2, sec:'Igiene', q:'Quante volte lavi i capelli a settimana?', type:'radio', opts:['Tutti i giorni e spesso 2 volte al giorno','Tutti i giorni','Una volta ogni 2 giorni','2 volte a settimana','Una volta a settimana'] },
-  { id:8,  ph:2, sec:'Igiene', q:'Quando hai lavato l\'ultima volta i capelli?', type:'radio-grid2', opts:['Oggi','Ieri','2 giorni fa','Più di 2 giorni fa'] },
-  { id:9,  ph:2, sec:'Igiene', q:'Che prodotti utilizzi di solito?', type:'radio', opts:['Prodotti generici comprati al supermercato','Prodotti specifici comprati in farmacia','Prodotti specifici comprati in salone / negozi specializzati'] },
-
-  // ── FASE 3 – SALUTE ──
-  { id:10, ph:3, sec:'Salute', q:'Esigenza / causa', type:'check-other', opts:['Problemi fisici negli ultimi anni','Operazioni','Diete'] },
-  { id:11, ph:3, sec:'Salute', q:'Valori ematici', type:'check-other', opts:['Analisi del sangue','Ferro'] },
-
-  // ── FASE 4 – CUTE E CAPELLI ──
-  { id:12, ph:4, sec:'Cute e Capelli', q:'Lamenti forfora e/o capelli grassi?', type:'radio', opts:['Sì','No'] },
-  { id:13, ph:4, sec:'Cute e Capelli', q:'Ti capita di trovare tracce di forfora sui vestiti o adese al cuoio capelluto?', type:'radio', opts:['Sì','No'] },
-  { id:14, ph:4, sec:'Cute e Capelli', q:'Percepisci la sensazione di prurito sul cuoio capelluto?', type:'radio-grid2', opts:['Sì','No','Lieve','Intenso'] },
-  { id:15, ph:4, sec:'Cute e Capelli', q:'Percepisci un fastidio o un dolore alla base dei capelli?', type:'radio', opts:['Sì','No'] },
-  { id:16, ph:4, sec:'Cute e Capelli', q:'La tua sudorazione è eccessiva?', type:'radio-grid3', opts:['Intensa','Normale','Leggera'] },
-
-  // ── FASE 5 – SONNO ──
-  { id:17, ph:5, sec:'Sonno', q:'Quante ore dormi di solito?', type:'radio', opts:['Meno di 6 ore','Tra le 6 e le 8 ore','Più di 8 ore al giorno'] },
-  { id:18, ph:5, sec:'Sonno', q:'Com\'è la qualità del sonno? (1 = pessima — 10 = ottima)', type:'scale' },
-  { id:19, ph:5, sec:'Sonno', q:'Ti alzi riposato/a?', type:'radio-grid3', opts:['Sì','Poco','No'] },
-  { id:20, ph:5, sec:'Sonno', q:'Hai difficoltà ad addormentarti?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
-  { id:21, ph:5, sec:'Sonno', q:'Ti svegli di continuo?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
-  { id:22, ph:5, sec:'Sonno', q:'Hai il sonno leggero?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
-
-  // ── FASE 6 – STRESS ──
-  { id:23, ph:6, sec:'Stress', q:'Ti senti stressato/a?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
-  { id:24, ph:6, sec:'Stress', q:'Il tuo lavoro ti mette a dura prova mentalmente e fisicamente? (es. turni di notte)', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
-  { id:25, ph:6, sec:'Stress', q:'Sei una persona che pensa molto?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
-  { id:26, ph:6, sec:'Stress', q:'Rifletti molto su qualsiasi cosa, sia di giorno che di notte?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
-  { id:27, ph:6, sec:'Stress', q:'Hai particolari disturbi gastrointestinali?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
-
-  // ── FASE 7 – FAMILIARITÀ ──
-  { id:28, ph:7, sec:'Familiarità', q:'Tuo padre ha perso i capelli?', type:'check-other', opts:['Sì','No'] },
-  { id:29, ph:7, sec:'Familiarità', q:'Tua madre ha perso i capelli?', type:'check-other', opts:['Sì','No'] },
-  { id:30, ph:7, sec:'Familiarità', q:'Il nonno, padre di tua madre, ha perso i capelli?', type:'check-other', opts:['Sì','No','In parte Sì'] },
-
-  // ── FASE 8 – ABITUDINI ──
-  { id:31, ph:8, sec:'Abitudini', q:'A che ora vai a dormire?', type:'radio', opts:['Quasi sempre prima delle 24:00','A volte vado a letto dopo le 24:00','Spesso vado a letto dopo le 24:00'] },
-  { id:32, ph:8, sec:'Abitudini', q:'Giudichi i tuoi capelli grassi?', type:'radio-grid3', opts:['Sì','No','A volte'] },
-  { id:33, ph:8, sec:'Abitudini', q:'Ti vedi diradato/a?', type:'check-other', opts:['Sì','No'] },
-  { id:34, ph:8, sec:'Abitudini', q:'Hai mai riscontrato carenze di ferritina, vitamina D, anemie o disturbi della tiroide?', type:'check-other', opts:['Sì','No'] },
-
-  // ── FASE 9 – DONNA ──
-  { id:35, ph:9, sec:'Donna', q:'Usi la pillola?', type:'radio', opts:['Sì','No'] },
-  { id:36, ph:9, sec:'Donna', q:'Se NON usi la pillola, le mestruazioni sono regolari?', type:'radio', opts:['Sì','No'] },
-  { id:37, ph:9, sec:'Donna', q:'Come giudichi il tuo umore?', type:'radio', opts:['Sono spesso triste o nervosa','A volte sono nervosa e stanca','Non riesco a dormire','Mi sento bene','Non mi sento bene'] },
-  { id:38, ph:9, sec:'Donna', q:'Fai spesso servizi di stiratura / permanente, colorazione / schiariture?', type:'radio-grid3', opts:['Spesso','A volte','Mai'] },
-  { id:39, ph:9, sec:'Donna', q:'I capelli ti sembrano secchi, spenti o che manchino di luminosità?', type:'radio', opts:['Sì','No'] },
-  { id:40, ph:9, sec:'Donna', q:'I capelli ti sembrano che manchino di volume?', type:'radio', opts:['Sì','No'] },
-  { id:41, ph:9, sec:'Donna', q:'Ti vedi diradata?', type:'check-other', opts:['Sì','No'] },
-
-  // ── FASE 10 – NEO MAMME ──
-  { id:42, ph:10, sec:'Neo Mamme', q:'Da quanto hai partorito?', type:'radio-grid3', opts:['Da 3 mesi','Da 6 mesi','Da più di un anno'] },
-  { id:43, ph:10, sec:'Neo Mamme', q:'Hai riscontrato in gravidanza o dopo il parto carenze di ferritina, vitamina D, anemie, acido folico, vitamina B12 o disturbi della tiroide?', type:'check-other', opts:['Sì','No'] },
-  { id:44, ph:10, sec:'Neo Mamme', q:'Stai allattando?', type:'radio', opts:['Sì','No'] },
-  { id:45, ph:10, sec:'Neo Mamme', q:'Fai spesso servizi di stiratura / permanente, colorazione / schiariture?', type:'radio-grid3', opts:['Spesso','A volte','Mai'] },
-  { id:46, ph:10, sec:'Neo Mamme', q:'I capelli ti sembrano secchi, spenti o che manchino di luminosità?', type:'radio', opts:['Sì','No'] },
-  { id:47, ph:10, sec:'Neo Mamme', q:'I capelli ti sembrano che manchino di volume?', type:'radio', opts:['Sì','No'] },
-
-  // ── FASE 11 – MENOPAUSA ──
-  { id:48, ph:11, sec:'Menopausa', q:'Hai problemi di salute?', type:'check-other', opts:['Sì','No'] },
-  { id:49, ph:11, sec:'Menopausa', q:'Hai mai riscontrato carenze di ferritina, vitamina D, anemie o disturbi della tiroide?', type:'check-other', opts:['Sì','No'] },
-  { id:50, ph:11, sec:'Menopausa', q:'Ti fanno male i capelli o la cute?', type:'radio', opts:['Sì','No'] },
-  { id:51, ph:11, sec:'Menopausa', q:'Lavando la testa cadono tanti capelli?', type:'radio', opts:['Sì','No'] },
-  { id:52, ph:11, sec:'Menopausa', q:'Com\'è il tuo umore?', type:'radio', opts:['Sono spesso triste o nervosa','A volte sono nervosa e stanca','Non riesco a dormire','Mi sento bene','Non mi sento bene'] },
-  { id:53, ph:11, sec:'Menopausa', q:'Ti vedi diradata?', type:'check-other', opts:['Sì','No'] },
-  { id:54, ph:11, sec:'Menopausa', q:'Fai spesso servizi di stiratura / permanente, colorazione / schiariture?', type:'radio-grid3', opts:['Spesso','A volte','Mai'] },
-  { id:55, ph:11, sec:'Menopausa', q:'I capelli ti sembrano secchi, spenti o che manchino di luminosità?', type:'radio', opts:['Sì','No'] },
-  { id:56, ph:11, sec:'Menopausa', q:'I capelli ti sembrano che manchino di volume?', type:'radio', opts:['Sì','No'] },
-
-  // ── FASE 12 – SCALE CLINICHE ──
-  { id:57, ph:12, sec:'Scale Cliniche', q:'Scala di Hamilton-Norwood — calvizie maschile', type:'norwood' },
-  { id:58, ph:12, sec:'Scale Cliniche', q:'Scala di Ludwig — diradamento femminile', type:'ludwig' },
-
-  // ── FASE 13 – OSSERVAZIONI ──
-  { id:59, ph:13, sec:'Osservazioni', q:'Osservazioni con Proscope', type:'textarea' },
-  { id:60, ph:13, sec:'Osservazioni', q:'Gravità in relazione all\'età', type:'matrix-gravity' },
-  { id:61, ph:13, sec:'Osservazioni', q:'Caduta — tipo e entità', type:'radio', opts:['Assente','Lieve (< 50 capelli/giorno)','Moderata (50–100 capelli/giorno)','Intensa (> 100 capelli/giorno)'] },
-  { id:62, ph:13, sec:'Osservazioni', q:'Zone colpite', type:'check-other', opts:['Frontale','Tempie','Vertice / Corona','Occipitale','Laterale sinistra','Laterale destra','Diffusa'] },
-  { id:63, ph:13, sec:'Osservazioni', q:'Cuoio capelluto — aspetto lipidico', type:'radio-grid3', opts:['Secco','Normale','Grasso'] },
-  { id:64, ph:13, sec:'Osservazioni', q:'Cuoio capelluto — spessore', type:'radio-grid3', opts:['Sottile','Normale','Spesso'] },
-  { id:65, ph:13, sec:'Osservazioni', q:'Cuoio capelluto — tensione', type:'radio-grid3', opts:['Bassa','Normale','Alta'] },
-  { id:66, ph:13, sec:'Osservazioni', q:'Cuoio capelluto — colore', type:'radio-grid3', opts:['Rosa (normale)','Arrossato','Pallido'] },
-  { id:67, ph:13, sec:'Osservazioni', q:'Forfora — tipo', type:'radio', opts:['Assente','Pitiriasi secca','Pitiriasi grassa','Squame aderenti'] },
-  { id:68, ph:13, sec:'Osservazioni', q:'Prurito — intensità', type:'radio-grid2', opts:['Assente','Lieve','Moderato','Intenso'] },
-  { id:69, ph:13, sec:'Osservazioni', q:'Odore del cuoio capelluto', type:'radio-grid3', opts:['Assente','Lieve','Intenso'] },
-  { id:70, ph:13, sec:'Osservazioni', q:'Sudorazione', type:'radio-grid3', opts:['Scarsa','Normale','Eccessiva'] },
-  { id:71, ph:13, sec:'Osservazioni', q:'Caratteristiche dei capelli', type:'check-other', opts:['Secchi','Grassi','Fragili','Spenti','Privi di volume','Con doppie punte','Trattati chimicamente'] },
-  { id:72, ph:13, sec:'Osservazioni', q:'Tipo di incidenze', type:'matrix-incidenze' },
-  { id:73, ph:13, sec:'Osservazioni', q:'Tags / Stato', type:'tags' },
-  { id:74, ph:13, sec:'Osservazioni', q:'Note finali', type:'textarea' },
+ 
+// ── FASE 2 – INDAGINE (Q10-Q27) ──
+const Q_INDAGINE = [
+  { id:10, sec:'Fase di Indagine', q:'Esigenza / causa', type:'check-other', opts:['Problemi fisici negli ultimi anni','Operazioni','Diete'] },
+  { id:11, sec:'Fase di Indagine', q:'Valori ematici', type:'check-other', opts:['Analisi del sangue','Ferro'] },
+  { id:12, sec:'Fase di Indagine', q:'Lamenti forfora e/o capelli grassi?', type:'radio', opts:['Sì','No'] },
+  { id:13, sec:'Fase di Indagine', q:'Ti capita di trovare tracce di forfora sui vestiti o adese al cuoio capelluto?', type:'radio', opts:['Sì','No'] },
+  { id:14, sec:'Fase di Indagine', q:'Percepisci la sensazione di prurito sul cuoio capelluto?', type:'radio-grid2', opts:['Sì','No','Lieve','Intenso'] },
+  { id:15, sec:'Fase di Indagine', q:'Percepisci un fastidio o un dolore alla base dei capelli?', type:'radio', opts:['Sì','No'] },
+  { id:16, sec:'Fase di Indagine', q:'La tua sudorazione è eccessiva?', type:'radio-grid3', opts:['Intensa','Normale','Leggera'] },
+  { id:17, sec:'Fase di Indagine', q:'Quante ore dormi di solito?', type:'radio', opts:['Meno di 6 ore','Tra le 6 e le 8 ore','Più di 8 ore al giorno'] },
+  { id:18, sec:'Fase di Indagine', q:'Com\'è la qualità del sonno? (1 = pessima — 10 = ottima)', type:'scale' },
+  { id:19, sec:'Fase di Indagine', q:'Ti alzi riposato/a?', type:'radio-grid3', opts:['Sì','Poco','No'] },
+  { id:20, sec:'Fase di Indagine', q:'Hai difficoltà ad addormentarti?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
+  { id:21, sec:'Fase di Indagine', q:'Ti svegli di continuo?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
+  { id:22, sec:'Fase di Indagine', q:'Hai il sonno leggero?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
+  { id:23, sec:'Fase di Indagine', q:'Ti senti stressato/a?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
+  { id:24, sec:'Fase di Indagine', q:'Il tuo lavoro ti mette a dura prova mentalmente e fisicamente? (es. turni di notte)', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
+  { id:25, sec:'Fase di Indagine', q:'Sei una persona che pensa molto?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
+  { id:26, sec:'Fase di Indagine', q:'Rifletti molto su qualsiasi cosa, sia di giorno che di notte?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
+  { id:27, sec:'Fase di Indagine', q:'Hai particolari disturbi gastrointestinali?', type:'radio-grid3', opts:['Sì','No','Abbastanza'] },
 ];
-
-const qMap = {};
-QS.forEach(q => qMap[q.id] = q);
-
+ 
+// ── CASI SPECIFICI ──
+const Q_UOMO = [
+  { id:28, sec:'Uomo Giovane', q:'Tuo padre ha perso i capelli?', type:'check-other', opts:['Sì','No'] },
+  { id:29, sec:'Uomo Giovane', q:'Tua madre ha perso i capelli?', type:'check-other', opts:['Sì','No'] },
+  { id:30, sec:'Uomo Giovane', q:'Il nonno, padre di tua madre, ha perso i capelli?', type:'check-other', opts:['Sì','No','In parte Sì'] },
+  { id:31, sec:'Uomo Giovane', q:'A che ora vai a dormire?', type:'radio', opts:['Quasi sempre prima delle 24:00','A volte vado a letto dopo le 24:00','Spesso vado a letto dopo le 24:00'] },
+  { id:32, sec:'Uomo Giovane', q:'Giudichi i tuoi capelli grassi?', type:'radio-grid3', opts:['Sì','No','A volte'] },
+  { id:33, sec:'Uomo Giovane', q:'Ti vedi diradato?', type:'check-other', opts:['Sì','No'] },
+];
+ 
+const Q_DONNA = [
+  { id:34, sec:'Donna Giovane', q:'Hai mai riscontrato carenze di ferritina, vitamina D, anemie o disturbi della tiroide?', type:'check-other', opts:['Sì','No'] },
+  { id:35, sec:'Donna Giovane', q:'Usi la pillola?', type:'radio', opts:['Sì','No'] },
+  { id:36, sec:'Donna Giovane', q:'Se NON usi la pillola, le mestruazioni sono regolari?', type:'radio', opts:['Sì','No'] },
+  { id:37, sec:'Donna Giovane', q:'Come giudichi il tuo umore?', type:'radio', opts:['Sono spesso triste o nervosa','A volte sono nervosa e stanca','Non riesco a dormire','Mi sento bene','Non mi sento bene'] },
+  { id:38, sec:'Donna Giovane', q:'Fai spesso servizi di stiratura / permanente, colorazione / schiariture?', type:'radio-grid3', opts:['Spesso','A volte','Mai'] },
+  { id:39, sec:'Donna Giovane', q:'I capelli ti sembrano secchi, spenti o che manchino di luminosità?', type:'radio', opts:['Sì','No'] },
+  { id:40, sec:'Donna Giovane', q:'I capelli ti sembrano che manchino di volume?', type:'radio', opts:['Sì','No'] },
+  { id:41, sec:'Donna Giovane', q:'Ti vedi diradata?', type:'check-other', opts:['Sì','No'] },
+];
+ 
+const Q_MAMMA = [
+  { id:42, sec:'Neo Mamma', q:'Da quanto hai partorito?', type:'radio-grid3', opts:['Da 3 mesi','Da 6 mesi','Da più di un anno'] },
+  { id:43, sec:'Neo Mamma', q:'Hai riscontrato in gravidanza o dopo il parto carenze di ferritina, vitamina D, anemie, acido folico, vitamina B12 o disturbi della tiroide?', type:'check-other', opts:['Sì','No'] },
+  { id:44, sec:'Neo Mamma', q:'Stai allattando?', type:'radio', opts:['Sì','No'] },
+  { id:45, sec:'Neo Mamma', q:'Fai spesso servizi di stiratura / permanente, colorazione / schiariture?', type:'radio-grid3', opts:['Spesso','A volte','Mai'] },
+  { id:46, sec:'Neo Mamma', q:'I capelli ti sembrano secchi, spenti o che manchino di luminosità?', type:'radio', opts:['Sì','No'] },
+  { id:47, sec:'Neo Mamma', q:'I capelli ti sembrano che manchino di volume?', type:'radio', opts:['Sì','No'] },
+];
+ 
+const Q_MENOPAUSA = [
+  { id:48, sec:'Donna Mezza Età', q:'Hai problemi di salute?', type:'check-other', opts:['Sì','No'] },
+  { id:49, sec:'Donna Mezza Età', q:'Hai mai riscontrato carenze di ferritina, vitamina D, anemie o disturbi della tiroide?', type:'check-other', opts:['Sì','No'] },
+  { id:50, sec:'Donna Mezza Età', q:'Ti fanno male i capelli o la cute?', type:'radio', opts:['Sì','No'] },
+  { id:51, sec:'Donna Mezza Età', q:'Lavando la testa cadono tanti capelli?', type:'radio', opts:['Sì','No'] },
+  { id:52, sec:'Donna Mezza Età', q:'Com\'è il tuo umore?', type:'radio', opts:['Sono spesso triste o nervosa','A volte sono nervosa e stanca','Non riesco a dormire','Mi sento bene','Non mi sento bene'] },
+  { id:53, sec:'Donna Mezza Età', q:'Ti vedi diradata?', type:'check-other', opts:['Sì','No'] },
+  { id:54, sec:'Donna Mezza Età', q:'Fai spesso servizi di stiratura / permanente, colorazione / schiariture?', type:'radio-grid3', opts:['Spesso','A volte','Mai'] },
+  { id:55, sec:'Donna Mezza Età', q:'I capelli ti sembrano secchi, spenti o che manchino di luminosità?', type:'radio', opts:['Sì','No'] },
+  { id:56, sec:'Donna Mezza Età', q:'I capelli ti sembrano che manchino di volume?', type:'radio', opts:['Sì','No'] },
+];
+ 
+// ── FASE VISIVA E TATTILE ──
+const Q_VISIVA = [
+  { id:100, sec:'Fase Visiva e Tattile', q:'Scala di Hamilton-Norwood — calvizie maschile', type:'norwood' },
+  { id:101, sec:'Fase Visiva e Tattile', q:'Scala di Ludwig — diradamento femminile', type:'ludwig' },
+  { id:102, sec:'Fase Visiva e Tattile', q:'Osservazioni con Proscope (ingrandimento 200X)', type:'textarea' },
+  { id:103, sec:'Fase Visiva e Tattile', q:'Gravità in relazione all\'età', type:'matrix-gravity' },
+  { id:104, sec:'Fase Visiva e Tattile', q:'Caduta — tipo e entità', type:'radio', opts:['Assente','Lieve (< 50 capelli/giorno)','Moderata (50–100 capelli/giorno)','Intensa (> 100 capelli/giorno)'] },
+  { id:105, sec:'Fase Visiva e Tattile', q:'Zone colpite', type:'check-other', opts:['Frontale','Tempie','Vertice / Corona','Occipitale','Laterale sinistra','Laterale destra','Diffusa'] },
+  { id:106, sec:'Fase Visiva e Tattile', q:'Cuoio capelluto — aspetto lipidico', type:'radio-grid3', opts:['Secco','Normale','Grasso'] },
+  { id:107, sec:'Fase Visiva e Tattile', q:'Cuoio capelluto — spessore', type:'radio-grid3', opts:['Sottile','Normale','Spesso'] },
+  { id:108, sec:'Fase Visiva e Tattile', q:'Cuoio capelluto — tensione', type:'radio-grid3', opts:['Bassa','Normale','Alta'] },
+  { id:109, sec:'Fase Visiva e Tattile', q:'Cuoio capelluto — colore', type:'radio-grid3', opts:['Rosa (normale)','Arrossato','Pallido'] },
+  { id:110, sec:'Fase Visiva e Tattile', q:'Forfora — tipo', type:'radio', opts:['Assente','Pitiriasi secca','Pitiriasi grassa','Squame aderenti'] },
+  { id:111, sec:'Fase Visiva e Tattile', q:'Prurito — intensità', type:'radio-grid2', opts:['Assente','Lieve','Moderato','Intenso'] },
+  { id:112, sec:'Fase Visiva e Tattile', q:'Odore del cuoio capelluto', type:'radio-grid3', opts:['Assente','Lieve','Intenso'] },
+  { id:113, sec:'Fase Visiva e Tattile', q:'Sudorazione', type:'radio-grid3', opts:['Scarsa','Normale','Eccessiva'] },
+  { id:114, sec:'Fase Visiva e Tattile', q:'Caratteristiche dei capelli', type:'check-other', opts:['Secchi','Grassi','Fragili','Spenti','Privi di volume','Con doppie punte','Trattati chimicamente'] },
+  { id:115, sec:'Fase Visiva e Tattile', q:'Tipo di incidenze', type:'matrix-incidenze' },
+  { id:116, sec:'Fase Visiva e Tattile', q:'Note finali', type:'textarea' },
+];
+ 
 // ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
 let S = {
-  idx:          0,
-  answers:      {},   // id → value
-  checkAns:     {},   // id → Set
-  otherTxt:     {},   // id → string
-  gravity:      {},   // zone → col index
-  incidenze:    new Set(),
-  tags:         new Set(),
+  step: 'conoscitiva',    // conoscitiva, indagine, selector, caso, visiva, done
+  qIdx: 0,                // indice domanda corrente nella fase
+  casoTipo: null,         // 'uomo', 'donna', 'mamma', 'menopausa'
+  answers: {},
+  checkAns: {},
+  otherTxt: {},
+  gravity: {},
+  incidenze: new Set(),
 };
-
-function cur()     { return QS[S.idx]; }
-function total()   { return QS.length; }
-
+ 
+// Domande attive in base allo step
+function getActiveQuestions() {
+  switch(S.step) {
+    case 'conoscitiva': return Q_CONOSCITIVA;
+    case 'indagine': return Q_INDAGINE;
+    case 'caso':
+      if (S.casoTipo === 'uomo') return Q_UOMO;
+      if (S.casoTipo === 'donna') return Q_DONNA;
+      if (S.casoTipo === 'mamma') return Q_MAMMA;
+      if (S.casoTipo === 'menopausa') return Q_MENOPAUSA;
+      return [];
+    case 'visiva': return Q_VISIVA;
+    default: return [];
+  }
+}
+ 
+function cur() { 
+  const qs = getActiveQuestions();
+  return qs[S.qIdx] || null;
+}
+ 
+function getCasoLength() {
+  if (S.casoTipo === 'uomo') return Q_UOMO.length;
+  if (S.casoTipo === 'donna') return Q_DONNA.length;
+  if (S.casoTipo === 'mamma') return Q_MAMMA.length;
+  if (S.casoTipo === 'menopausa') return Q_MENOPAUSA.length;
+  return 6;
+}
+ 
+function globalProgress() {
+  let done = 0;
+  let casoLen = S.casoTipo ? getCasoLength() : 6;
+  
+  if (S.step === 'conoscitiva') done = S.qIdx;
+  else if (S.step === 'indagine') done = Q_CONOSCITIVA.length + S.qIdx;
+  else if (S.step === 'selector') done = Q_CONOSCITIVA.length + Q_INDAGINE.length;
+  else if (S.step === 'caso') done = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + S.qIdx;
+  else if (S.step === 'visiva') done = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + S.qIdx;
+  else if (S.step === 'done') return 'Completato';
+  
+  const total = Q_CONOSCITIVA.length + Q_INDAGINE.length + 1 + casoLen + Q_VISIVA.length;
+  return (done + 1) + ' / ' + total;
+}
+ 
 // ═══════════════════════════════════════
 // TIMELINE
 // ═══════════════════════════════════════
 function renderTimeline() {
-  const tl  = document.getElementById('timeline');
+  const tl = document.getElementById('timeline');
   if (!tl) return;
-  const cid = cur() ? cur().id : 999;
-  let curPh = 0;
-  PHASES.forEach(p => { if (p.qids.includes(cid)) curPh = p.id; });
-  if (S.idx >= QS.length) curPh = 999;
-
+  
+  const phases = [
+    { label: 'Conoscitiva', active: S.step === 'conoscitiva' },
+    { label: 'Indagine', active: S.step === 'indagine' },
+    { label: 'Caso', active: S.step === 'selector' || S.step === 'caso' },
+    { label: 'Visiva', active: S.step === 'visiva' },
+    { label: 'Fine', active: S.step === 'done' },
+  ];
+  
+  let currentIdx = phases.findIndex(p => p.active);
+  
   let html = '';
-  PHASES.forEach((p, i) => {
-    const done   = p.id < curPh;
-    const active = p.id === curPh;
+  phases.forEach((p, i) => {
     let cls = 'tl-item';
-    if (done)   cls += ' done';
-    if (active) cls += ' active';
+    if (i < currentIdx) cls += ' done';
+    if (i === currentIdx) cls += ' active';
     html += `<div class="${cls}"><div class="tl-dot"></div><div class="tl-lbl">${p.label}</div></div>`;
   });
   tl.innerHTML = html;
 }
-
+ 
 // ═══════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════
 function goBack() {
-  if (S.idx > 0) { S.idx--; render(); }
-}
-function goNext() {
-  if (S.idx < QS.length) {
-    S.idx++;
-    render();
+  if (S.step === 'conoscitiva' && S.qIdx > 0) {
+    S.qIdx--;
+  } else if (S.step === 'indagine' && S.qIdx > 0) {
+    S.qIdx--;
+  } else if (S.step === 'indagine' && S.qIdx === 0) {
+    S.step = 'conoscitiva';
+    S.qIdx = Q_CONOSCITIVA.length - 1;
+  } else if (S.step === 'selector') {
+    S.step = 'indagine';
+    S.qIdx = Q_INDAGINE.length - 1;
+  } else if (S.step === 'caso' && S.qIdx > 0) {
+    S.qIdx--;
+  } else if (S.step === 'caso' && S.qIdx === 0) {
+    S.step = 'selector';
+    S.casoTipo = null;
+  } else if (S.step === 'visiva' && S.qIdx > 0) {
+    S.qIdx--;
+  } else if (S.step === 'visiva' && S.qIdx === 0) {
+    S.step = 'caso';
+    S.qIdx = getActiveQuestions().length - 1;
   }
+  render();
 }
-
+ 
+function goNext() {
+  const qs = getActiveQuestions();
+  
+  if (S.step === 'conoscitiva') {
+    if (S.qIdx < qs.length - 1) {
+      S.qIdx++;
+    } else {
+      S.step = 'indagine';
+      S.qIdx = 0;
+    }
+  } else if (S.step === 'indagine') {
+    if (S.qIdx < qs.length - 1) {
+      S.qIdx++;
+    } else {
+      S.step = 'selector';
+    }
+  } else if (S.step === 'caso') {
+    if (S.qIdx < qs.length - 1) {
+      S.qIdx++;
+    } else {
+      S.step = 'visiva';
+      S.qIdx = 0;
+    }
+  } else if (S.step === 'visiva') {
+    if (S.qIdx < qs.length - 1) {
+      S.qIdx++;
+    } else {
+      S.step = 'done';
+    }
+  }
+  render();
+}
+ 
+function selectCaso(tipo) {
+  S.casoTipo = tipo;
+  S.step = 'caso';
+  S.qIdx = 0;
+  render();
+}
+ 
 // ═══════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════
@@ -426,34 +519,42 @@ function optColorClass(val) {
   return '';
 }
 function escQ(s) { return (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
-
+ 
 // ═══════════════════════════════════════
 // RENDER
 // ═══════════════════════════════════════
 function render() {
   renderTimeline();
-
-  const main    = document.getElementById('main');
+ 
+  const main = document.getElementById('main');
   const btnBack = document.getElementById('btnBack');
   const btnNext = document.getElementById('btnNext');
   const navFoot = document.getElementById('navFooter');
-  const siInfo  = document.getElementById('stepInfo');
-
-  btnBack.disabled = S.idx === 0;
-
-  // Scheda completata
-  if (S.idx >= QS.length) {
+  const siInfo = document.getElementById('stepInfo');
+ 
+  siInfo.textContent = globalProgress();
+  btnBack.disabled = (S.step === 'conoscitiva' && S.qIdx === 0);
+ 
+  if (S.step === 'done') {
     navFoot.style.display = 'none';
-    siInfo.textContent    = 'Completato';
     renderDone(main);
     return;
   }
-
+ 
   navFoot.style.display = '';
+ 
+  if (S.step === 'selector') {
+    btnNext.style.display = 'none';
+    renderSelector(main);
+    return;
+  }
+ 
+  btnNext.style.display = '';
+  
   const q = cur();
-  siInfo.textContent = q.id + ' / ' + total();
-
-  let html = `<div class="sec-badge">Fase ${q.ph} — ${q.sec}</div>
+  if (!q) return;
+ 
+  let html = `<div class="sec-badge">${q.sec}</div>
 <div class="q-card">
   <div class="q-num">Domanda ${q.id}</div>
   <div class="q-text">${q.q}</div>`;
@@ -461,7 +562,33 @@ function render() {
   html += `</div>`;
   main.innerHTML = html;
 }
-
+ 
+function renderSelector(main) {
+  main.innerHTML = `
+  <div class="sec-badge">Seleziona Caso Specifico</div>
+  <div class="q-card">
+    <div class="q-text">Seleziona il caso specifico per questo cliente:</div>
+    <div class="caso-selector">
+      <button class="caso-btn uomo" onclick="selectCaso('uomo')">
+        <div class="caso-icon">👨</div>
+        <div class="caso-label">Uomo Giovane</div>
+      </button>
+      <button class="caso-btn donna" onclick="selectCaso('donna')">
+        <div class="caso-icon">👩</div>
+        <div class="caso-label">Donna Giovane</div>
+      </button>
+      <button class="caso-btn mamma" onclick="selectCaso('mamma')">
+        <div class="caso-icon">🤱</div>
+        <div class="caso-label">Neo Mamma</div>
+      </button>
+      <button class="caso-btn menopausa" onclick="selectCaso('menopausa')">
+        <div class="caso-icon">👩‍🦳</div>
+        <div class="caso-label">Donna Mezza Età</div>
+      </button>
+    </div>
+  </div>`;
+}
+ 
 function renderInput(q) {
   switch (q.type) {
     case 'name':            return rName(q);
@@ -475,12 +602,10 @@ function renderInput(q) {
     case 'matrix-incidenze':return rMatrixIncidenze();
     case 'norwood':         return rNorwood(q);
     case 'ludwig':          return rLudwig(q);
-    case 'tags':            return rTags();
     default: return '';
   }
 }
-
-// ── NOME ──
+ 
 function rName(q) {
   const first = S.answers[q.id + '_first'] || '';
   const last  = S.answers[q.id + '_last']  || '';
@@ -489,8 +614,7 @@ function rName(q) {
     <div class="inp-group"><label>Cognome</label><input type="text" value="${last}" placeholder="Cognome" oninput="S.answers[${q.id}+'_last']=this.value"></div>
   </div>`;
 }
-
-// ── RADIO LIST ──
+ 
 function rRadioList(q) {
   return '<div class="opts">' + q.opts.map(o => {
     const sel = S.answers[q.id] === o ? ' sel' : '';
@@ -498,8 +622,7 @@ function rRadioList(q) {
     return `<button class="opt${sel}${col}" onclick="pickR(${q.id},'${escQ(o)}')"><span class="opt-radio"></span>${o}</button>`;
   }).join('') + '</div>';
 }
-
-// ── RADIO GRID ──
+ 
 function rRadioGrid(q, cols) {
   const cls = cols === 3 ? 'opts-grid3' : 'opts-grid2';
   return '<div class="' + cls + '">' + q.opts.map(o => {
@@ -508,8 +631,7 @@ function rRadioGrid(q, cols) {
     return `<button class="opt${sel}${col}" onclick="pickR(${q.id},'${escQ(o)}')"><span class="opt-radio"></span>${o}</button>`;
   }).join('') + '</div>';
 }
-
-// ── CHECKBOX + OTHER ──
+ 
 function rCheckOther(q) {
   const set   = S.checkAns[q.id] || new Set();
   const other = S.otherTxt[q.id] || '';
@@ -523,8 +645,7 @@ function rCheckOther(q) {
   html += `<div class="other-row"><span class="other-lbl">Altro:</span><input class="other-inp" type="text" value="${other}" placeholder="Specifica…" oninput="S.otherTxt[${q.id}]=this.value"></div>`;
   return html;
 }
-
-// ── SCALA ──
+ 
 function rScale(q) {
   const val = S.answers[q.id];
   let btns = '';
@@ -537,17 +658,15 @@ function rScale(q) {
     <div class="scale-btns">${btns}</div>
   </div>`;
 }
-
-// ── TEXTAREA ──
+ 
 function rTextarea(q) {
   const val = S.answers[q.id] || '';
   return `<textarea placeholder="Scrivi qui…" oninput="S.answers[${q.id}]=this.value">${val}</textarea>`;
 }
-
-// ── MATRIX GRAVITÀ ──
+ 
 function rMatrixGravity() {
   const zones = ['Attaccatura frontale','Tempie','Vertice / Corona','Zona occipitale','Laterale sinistra','Laterale destra'];
-  const cols  = ['1 – Min.','2 – Lieve','3 – Mod.','4 – Sign.','5 – Grave'];
+  const cols  = ['1','2','3','4','5'];
   let html = '<div class="mx-scroll"><table class="mx-table"><thead><tr><th>Zona</th>';
   cols.forEach(c => html += `<th>${c}</th>`);
   html += '</tr></thead><tbody>';
@@ -562,8 +681,7 @@ function rMatrixGravity() {
   html += '</tbody></table></div>';
   return html;
 }
-
-// ── MATRIX INCIDENZE ──
+ 
 function rMatrixIncidenze() {
   const types = [
     'Alopecia androgenetica','Alopecia areata','Alopecia da trazione',
@@ -580,8 +698,7 @@ function rMatrixIncidenze() {
   html += `<div class="other-row"><span class="other-lbl">Altro:</span><input class="other-inp" type="text" value="${other}" placeholder="Specifica…" oninput="S.otherTxt['incid']=this.value"></div>`;
   return html;
 }
-
-// ── HAMILTON-NORWOOD ──
+ 
 const NORWOOD_STAGES = [
   { stage:'I',    label:'Stadio I',    desc:'Attaccatura intatta, nessuna recessione' },
   { stage:'II',   label:'Stadio II',   desc:'Leggera recessione sulle tempie' },
@@ -605,8 +722,7 @@ function rNorwood(q) {
   html += '</div>';
   return html;
 }
-
-// ── LUDWIG ──
+ 
 const LUDWIG_STAGES = [
   { stage:'I',   label:'Grado I',   desc:'Diradamento lieve — visibile alla scriminatura' },
   { stage:'II',  label:'Grado II',  desc:'Diradamento moderato — scriminatura ampia' },
@@ -624,24 +740,7 @@ function rLudwig(q) {
   html += '</div>';
   return html;
 }
-
-// ── TAGS ──
-function rTags() {
-  const items = [
-    { label:'Todo',        key:'todo', cls:'sel-todo' },
-    { label:'In Progress', key:'prog', cls:'sel-prog' },
-    { label:'Done',        key:'done', cls:'sel-done' },
-  ];
-  let html = '<div class="tags-wrap">';
-  items.forEach(t => {
-    const sel = S.tags.has(t.key) ? ' ' + t.cls : '';
-    html += `<button class="tag${sel}" onclick="toggleTag('${t.key}','${t.cls}')">${t.label}</button>`;
-  });
-  html += '</div>';
-  return html;
-}
-
-// ── DONE ──
+ 
 function renderDone(main) {
   const name = (S.answers['1_first'] || '') + ' ' + (S.answers['1_last'] || '');
   const display = name.trim() ? name.trim() : null;
@@ -656,7 +755,7 @@ function renderDone(main) {
     </div>
   </div>`;
 }
-
+ 
 // ═══════════════════════════════════════
 // ACTIONS
 // ═══════════════════════════════════════
@@ -684,19 +783,15 @@ function toggleI(val) {
   else S.incidenze.add(val);
   render();
 }
-function toggleTag(key, cls) {
-  if (S.tags.has(key)) S.tags.delete(key);
-  else S.tags.add(key);
-  render();
-}
 function resetForm() {
-  S = { idx:0, answers:{}, checkAns:{}, otherTxt:{}, gravity:{}, incidenze:new Set(), tags:new Set() };
+  S = { step:'conoscitiva', qIdx:0, casoTipo:null, answers:{}, checkAns:{}, otherTxt:{}, gravity:{}, incidenze:new Set() };
   document.getElementById('navFooter').style.display = '';
   render();
 }
-
+ 
 // ── INIT ──
 render();
 </script>
 </body>
 </html>
+ 
