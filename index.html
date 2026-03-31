@@ -361,8 +361,9 @@ const Q_VISIVA = [
   { id:112, sec:'Fase Visiva e Tattile', q:'Odore del cuoio capelluto', type:'radio-grid3', opts:['Assente','Lieve','Intenso'] },
   { id:113, sec:'Fase Visiva e Tattile', q:'Sudorazione', type:'radio-grid3', opts:['Scarsa','Normale','Eccessiva'] },
   { id:114, sec:'Fase Visiva e Tattile', q:'Caratteristiche dei capelli', type:'check-other', opts:['Secchi','Grassi','Fragili','Spenti','Privi di volume','Con doppie punte','Trattati chimicamente'] },
-  { id:115, sec:'Fase Visiva e Tattile', q:'Tipo di incidenze', type:'matrix-incidenze' },
-  { id:116, sec:'Fase Visiva e Tattile', q:'Note finali', type:'textarea' },
+  { id:115, sec:'Fase Visiva e Tattile', q:'Tipo di incidenza', type:'incidenze-visive' },
+  { id:116, sec:'Fase Visiva e Tattile', q:'Patologie riscontrate', type:'patologie-check' },
+  { id:117, sec:'Fase Visiva e Tattile', q:'Note finali', type:'textarea' },
 ];
  
 // ═══════════════════════════════════════
@@ -639,6 +640,8 @@ function renderInput(q) {
     case 'textarea':        return rTextarea(q);
     case 'matrix-gravity':  return rMatrixGravity();
     case 'matrix-incidenze':return rMatrixIncidenze();
+    case 'incidenze-visive':return rIncidenze();
+    case 'patologie-check': return rPatologie();
     case 'norwood':         return rNorwood(q);
     case 'ludwig':          return rLudwig(q);
     default: return '';
@@ -728,10 +731,9 @@ const INCIDENZE_TIPI = [
   { tipo:'Psicofisica',  img:'img/incidenza-psicofisica.png' },
 ];
  
-function rMatrixIncidenze() {
-  // Prima le 4 mappe visive selezionabili
-  let html = '<p style="font-size:13px;font-weight:600;color:var(--gray);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;">Tipo di incidenza</p>';
-  html += '<div class="clinical-grid incidenze-grid">';
+// Funzione per le 4 mappe visive (Q115)
+function rIncidenze() {
+  let html = '<div class="clinical-grid incidenze-grid">';
   INCIDENZE_TIPI.forEach(i => {
     const sel = S.answers['incid_tipo'] === i.tipo ? ' sel' : '';
     html += `<div class="clinical-item${sel}" onclick="pickIncidTipo('${escQ(i.tipo)}')">
@@ -740,21 +742,30 @@ function rMatrixIncidenze() {
     </div>`;
   });
   html += '</div>';
-  
-  // Poi le checkbox delle patologie
-  html += '<p style="font-size:13px;font-weight:600;color:var(--gray);margin:24px 0 12px;text-transform:uppercase;letter-spacing:.05em;">Patologie riscontrate</p>';
+  return html;
+}
+ 
+// Funzione per le patologie checkbox (Q116)
+function rPatologie() {
   const types = [
     'Alopecia androgenetica','Alopecia areata','Alopecia da trazione',
     'Telogen effluvium','Anagen effluvium','Dermatite seborroica',
     'Pitiriasi','Psoriasi del cuoio capelluto','Tricotillomania'
   ];
-  html += '<div class="opts">';
+  let html = '<div class="opts">';
   types.forEach(t => {
     const sel = S.incidenze.has(t) ? ' sel' : '';
     html += `<button class="opt${sel}" onclick="toggleI('${escQ(t)}')"><span class="opt-check"></span>${t}</button>`;
   });
   html += '</div>';
   const other = S.otherTxt['incid'] || '';
+  html += `<div class="other-row"><span class="other-lbl">Altro:</span><input class="other-inp" type="text" value="${other}" placeholder="Specifica…" oninput="S.otherTxt['incid']=this.value"></div>`;
+  return html;
+}
+ 
+// Mantieni per retrocompatibilità (non più usata)
+function rMatrixIncidenze() {
+  return rIncidenze() + rPatologie();
   html += `<div class="other-row"><span class="other-lbl">Altro:</span><input class="other-inp" type="text" value="${other}" placeholder="Specifica…" oninput="S.otherTxt['incid']=this.value"></div>`;
   return html;
 }
@@ -785,9 +796,9 @@ function rNorwood(q) {
 }
  
 const LUDWIG_STAGES = [
-  { stage:'I',   label:'Grado I',   desc:'Diradamento lieve — visibile alla scriminatura', img:'img/ludwig-1.png' },
-  { stage:'II',  label:'Grado II',  desc:'Diradamento moderato — scriminatura ampia', img:'img/ludwig-2.png' },
-  { stage:'III', label:'Grado III', desc:'Diradamento grave — cuoio capelluto ben visibile', img:'img/ludwig-3.png' },
+  { stage:'I',   label:'Grado I',   img:'img/ludwig-1.png' },
+  { stage:'II',  label:'Grado II',  img:'img/ludwig-2.png' },
+  { stage:'III', label:'Grado III', img:'img/ludwig-3.png' },
 ];
 function rLudwig(q) {
   let html = '<div class="clinical-grid ludwig-grid">';
@@ -796,7 +807,7 @@ function rLudwig(q) {
     html += `<div class="clinical-item${sel}" onclick="pickR(${q.id},'${escQ(s.stage)}')">
       <img src="${s.img}" alt="${s.label}" style="width: 100%; height: auto; border-radius: 4px; display: block;" referrerPolicy="no-referrer" />
       <div class="ci-stage">${s.label}</div>
-      <div class="ci-desc">${s.desc}</div>
+    </div>`;
     </div>`;
   });
   html += '</div>';
