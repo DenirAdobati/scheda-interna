@@ -172,17 +172,22 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
  
 /* ── SCALE CLINICHE ── */
 .clinical-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+.clinical-grid.ludwig-grid { grid-template-columns:1fr 1fr 1fr; }
+.clinical-grid.incidenze-grid { grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px; }
 .clinical-item {
   padding:14px 12px; border:2px solid var(--border); border-radius:var(--radius-sm);
   background:#fff; cursor:pointer; text-align:center; transition:all .13s;
 }
 .clinical-item:active { transform:scale(.97); }
 .clinical-item.sel { border-color:var(--gold); background:var(--gold-light); }
-.clinical-item .ci-stage { font-size:18px; font-weight:800; color:var(--gold); margin-bottom:5px; }
+.clinical-item .ci-stage { font-size:18px; font-weight:800; color:var(--gold); margin-bottom:5px; margin-top:8px; }
 .clinical-item.sel .ci-stage { color:var(--black); }
 .clinical-item .ci-label { font-size:13px; font-weight:600; color:var(--dark); margin-bottom:3px; }
 .clinical-item .ci-desc  { font-size:11px; color:var(--gray); line-height:1.4; }
 .clinical-item.sel .ci-desc { color:#4B5563; }
+.ludwig-grid .ci-stage { font-size:14px; }
+.ludwig-grid .ci-desc { font-size:10px; }
+.incidenze-grid .ci-stage { font-size:13px; font-weight:700; margin-top:6px; margin-bottom:0; }
  
 /* ── CASO SPECIFICO SELECTOR ── */
 .caso-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -716,13 +721,34 @@ function rMatrixGravity() {
   return html;
 }
  
+const INCIDENZE_TIPI = [
+  { tipo:'Digestiva',    img:'img/incidenza-digestiva.png' },
+  { tipo:'Nervosa',      img:'img/incidenza-nervosa.png' },
+  { tipo:'Fisica',       img:'img/incidenza-fisica.png' },
+  { tipo:'Psicofisica',  img:'img/incidenza-psicofisica.png' },
+];
+ 
 function rMatrixIncidenze() {
+  // Prima le 4 mappe visive selezionabili
+  let html = '<p style="font-size:13px;font-weight:600;color:var(--gray);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;">Tipo di incidenza</p>';
+  html += '<div class="clinical-grid incidenze-grid">';
+  INCIDENZE_TIPI.forEach(i => {
+    const sel = S.answers['incid_tipo'] === i.tipo ? ' sel' : '';
+    html += `<div class="clinical-item${sel}" onclick="pickIncidTipo('${escQ(i.tipo)}')">
+      <img src="${i.img}" alt="${i.tipo}" style="width: 100%; height: auto; border-radius: 4px; display: block;" referrerPolicy="no-referrer" />
+      <div class="ci-stage">${i.tipo}</div>
+    </div>`;
+  });
+  html += '</div>';
+  
+  // Poi le checkbox delle patologie
+  html += '<p style="font-size:13px;font-weight:600;color:var(--gray);margin:24px 0 12px;text-transform:uppercase;letter-spacing:.05em;">Patologie riscontrate</p>';
   const types = [
     'Alopecia androgenetica','Alopecia areata','Alopecia da trazione',
     'Telogen effluvium','Anagen effluvium','Dermatite seborroica',
     'Pitiriasi','Psoriasi del cuoio capelluto','Tricotillomania'
   ];
-  let html = '<div class="opts">';
+  html += '<div class="opts">';
   types.forEach(t => {
     const sel = S.incidenze.has(t) ? ' sel' : '';
     html += `<button class="opt${sel}" onclick="toggleI('${escQ(t)}')"><span class="opt-check"></span>${t}</button>`;
@@ -734,14 +760,17 @@ function rMatrixIncidenze() {
 }
  
 const NORWOOD_STAGES = [
-  { stage:'I',    img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+I' },
-  { stage:'II',   img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+II' },
-  { stage:'III',  img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+III' },
-  { stage:'IIIv', img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+IIIv' },
-  { stage:'IV',   img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+IV' },
-  { stage:'V',    img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+V' },
-  { stage:'VI',   img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+VI' },
-  { stage:'VII',  img:'https://placehold.co/300x300/ffffff/111827?text=Stadio+VII' },
+  { stage:'I',    img:'img/norwood-1.png' },
+  { stage:'II',   img:'img/norwood-2.png' },
+  { stage:'III',  img:'img/norwood-3.png' },
+  { stage:'IIIv', img:'img/norwood-3v.png' },
+  { stage:'IV',   img:'img/norwood-4.png' },
+  { stage:'IVa',  img:'img/norwood-4a.png' },
+  { stage:'V',    img:'img/norwood-5.png' },
+  { stage:'Va',   img:'img/norwood-5a.png' },
+  { stage:'VI',   img:'img/norwood-6.png' },
+  { stage:'VII',  img:'img/norwood-7.png' },
+  { stage:'VIIa', img:'img/norwood-7a.png' },
 ];
 function rNorwood(q) {
   let html = '<div class="clinical-grid">';
@@ -756,16 +785,17 @@ function rNorwood(q) {
 }
  
 const LUDWIG_STAGES = [
-  { stage:'I',   label:'Grado I',   desc:'Diradamento lieve — visibile alla scriminatura' },
-  { stage:'II',  label:'Grado II',  desc:'Diradamento moderato — scriminatura ampia' },
-  { stage:'III', label:'Grado III', desc:'Diradamento grave — cuoio capelluto ben visibile' },
+  { stage:'I',   label:'Grado I',   desc:'Diradamento lieve — visibile alla scriminatura', img:'img/ludwig-1.png' },
+  { stage:'II',  label:'Grado II',  desc:'Diradamento moderato — scriminatura ampia', img:'img/ludwig-2.png' },
+  { stage:'III', label:'Grado III', desc:'Diradamento grave — cuoio capelluto ben visibile', img:'img/ludwig-3.png' },
 ];
 function rLudwig(q) {
-  let html = '<div class="opts">';
+  let html = '<div class="clinical-grid ludwig-grid">';
   LUDWIG_STAGES.forEach(s => {
     const sel = S.answers[q.id] === s.stage ? ' sel' : '';
-    html += `<div class="clinical-item${sel}" onclick="pickR(${q.id},'${escQ(s.stage)}')" style="text-align:left;padding:16px 18px;">
-      <div class="ci-stage" style="font-size:16px;margin-bottom:4px;">${s.label}</div>
+    html += `<div class="clinical-item${sel}" onclick="pickR(${q.id},'${escQ(s.stage)}')">
+      <img src="${s.img}" alt="${s.label}" style="width: 100%; height: auto; border-radius: 4px; display: block;" referrerPolicy="no-referrer" />
+      <div class="ci-stage">${s.label}</div>
       <div class="ci-desc">${s.desc}</div>
     </div>`;
   });
@@ -815,6 +845,11 @@ function toggleI(val) {
   else S.incidenze.add(val);
   render();
 }
+function pickIncidTipo(val) {
+  if (S.answers['incid_tipo'] === val) delete S.answers['incid_tipo'];
+  else S.answers['incid_tipo'] = val;
+  render();
+}
 function resetForm() {
   S = { step:'conoscitiva', qIdx:0, casoTipo:null, answers:{}, checkAns:{}, otherTxt:{}, gravity:{}, incidenze:new Set() };
   document.getElementById('navFooter').style.display = '';
@@ -826,3 +861,4 @@ render();
 </script>
 </body>
 </html>
+ 
