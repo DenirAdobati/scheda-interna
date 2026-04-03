@@ -578,6 +578,7 @@ function goNext() {
     if (S.qIdx < qs.length - 1) {
       S.qIdx++;
     } else {
+      inviaAlWebhook();
       S.step = 'done';
     }
   }
@@ -589,6 +590,54 @@ function selectCaso(tipo) {
   S.step = 'caso';
   S.qIdx = 0;
   render();
+}
+ 
+// ═══════════════════════════════════════
+// INVIO WEBHOOK N8N
+// ═══════════════════════════════════════
+const WEBHOOK_URL = 'https://deniradobati.app.n8n.cloud/webhook/scheda-tricologica';
+ 
+async function inviaAlWebhook() {
+  const dati = {
+    timestamp: new Date().toISOString(),
+    nome: S.answers['1_first'] || '',
+    cognome: S.answers['1_last'] || '',
+    casoTipo: S.casoTipo,
+    risposte: {},
+    checkboxRisposte: {},
+    gravity: S.gravity,
+    incidenze: Array.from(S.incidenze),
+    incidenzeTab: Array.from(S.incidenzeTab),
+    incidenzaTipo: S.answers['incid_tipo'] || null
+  };
+  
+  const tutteDomande = [...Q_CONOSCITIVA, ...Q_INDAGINE, ...Q_UOMO, ...Q_DONNA, ...Q_MAMMA, ...Q_MENOPAUSA, ...Q_VISIVA];
+  tutteDomande.forEach(q => {
+    if (S.answers[q.id] !== undefined) {
+      dati.risposte[q.q] = S.answers[q.id];
+    }
+    if (S.checkAns[q.id]) {
+      dati.checkboxRisposte[q.q] = Array.from(S.checkAns[q.id]);
+    }
+    if (S.otherTxt[q.id]) {
+      dati.risposte[q.q + ' (altro)'] = S.otherTxt[q.id];
+    }
+  });
+  
+  if (S.otherTxt['incid']) {
+    dati.risposte['Patologie (altro)'] = S.otherTxt['incid'];
+  }
+  
+  try {
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dati)
+    });
+    console.log('Dati inviati con successo');
+  } catch (err) {
+    console.error('Errore invio webhook:', err);
+  }
 }
  
 // ═══════════════════════════════════════
