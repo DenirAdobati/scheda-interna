@@ -596,43 +596,67 @@ function selectCaso(tipo) {
 // INVIO WEBHOOK MAKE.COM
 // ═══════════════════════════════════════
 const WEBHOOK_URL = 'https://hook.eu1.make.com/vimfczhe9gltxk7kokg69jdonoq6pl';
+const GOOGLE_DRIVE_FOLDER_ID = '1ZytpAyYBCddOK5UFaNm_x0FK93-voRR9';
  
-async function inviaAlWebhook() {
-  const dati = {
-    timestamp: new Date().toISOString(),
-    nome: S.answers['1_first'] || '',
-    cognome: S.answers['1_last'] || '',
-    casoTipo: S.casoTipo,
-    risposte: {},
-    checkboxRisposte: {},
-    gravity: S.gravity,
-    incidenze: Array.from(S.incidenze),
-    incidenzeTab: Array.from(S.incidenzeTab),
-    incidenzaTipo: S.answers['incid_tipo'] || null
-  };
+function generaHTMLPdf() {
+  const nome = S.answers['1_first'] || '';
+  const cognome = S.answers['1_last'] || '';
+  const timestamp = new Date().toLocaleString('it-IT');
+  const casoTipo = S.casoTipo || '';
+  const incidenzaTipo = S.answers['incid_tipo'] || 'Non specificato';
   
+  // Raccogli risposte
   const tutteDomande = [...Q_CONOSCITIVA, ...Q_INDAGINE, ...Q_UOMO, ...Q_DONNA, ...Q_MAMMA, ...Q_MENOPAUSA, ...Q_VISIVA];
+  let risposteHTML = '';
+  let checkboxHTML = '';
+  
   tutteDomande.forEach(q => {
     if (S.answers[q.id] !== undefined) {
-      dati.risposte[q.q] = S.answers[q.id];
+      risposteHTML += '<div style="margin-bottom:8px;padding:8px 12px;background:#fafafa;border-radius:4px;"><strong>' + q.q + ':</strong> ' + S.answers[q.id] + '</div>';
     }
-    if (S.checkAns[q.id]) {
-      dati.checkboxRisposte[q.q] = Array.from(S.checkAns[q.id]);
-    }
-    if (S.otherTxt[q.id]) {
-      dati.risposte[q.q + ' (altro)'] = S.otherTxt[q.id];
+    if (S.checkAns[q.id] && S.checkAns[q.id].size > 0) {
+      checkboxHTML += '<div style="margin-bottom:8px;"><strong>' + q.q + ':</strong> ' + Array.from(S.checkAns[q.id]).join(', ') + '</div>';
     }
   });
   
-  if (S.otherTxt['incid']) {
-    dati.risposte['Patologie (altro)'] = S.otherTxt['incid'];
-  }
+  // Gravità
+  let gravityHTML = '';
+  Object.entries(S.gravity).forEach(([zona, val]) => {
+    const pct = (val + 1) * 20;
+    gravityHTML += '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:#fafafa;margin-bottom:5px;border-radius:4px;"><span>' + zona + '</span><div style="width:100px;height:8px;background:#e5e5e5;border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:#EAB308;"></div></div></div>';
+  });
+  
+  // Incidenze
+  const incidenze = Array.from(S.incidenze);
+  let incidenzeBadges = incidenze.map(i => '<span style="display:inline-block;background:#EAB308;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;margin:3px;">' + i + '</span>').join('');
+  if (!incidenzeBadges) incidenzeBadges = '<span style="color:#888;">Nessuna</span>';
+  
+  // Incidenze Tab
+  const incidenzeTab = Array.from(S.incidenzeTab);
+  let incidenzeTabBadges = incidenzeTab.map(i => '<span style="display:inline-block;background:transparent;border:1px solid #EAB308;color:#333;padding:3px 10px;border-radius:12px;font-size:12px;margin:3px;">' + i + '</span>').join('');
+  if (!incidenzeTabBadges) incidenzeTabBadges = '<span style="color:#888;">Nessuna</span>';
+ 
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Segoe UI,Arial,sans-serif;padding:40px;color:#1a1a1a;font-size:14px}h1{color:#EAB308;border-bottom:2px solid #EAB308;padding-bottom:10px;margin-bottom:30px;font-size:24px}.header-subtitle{color:#666;font-size:12px;margin-top:-25px;margin-bottom:30px}.info-box{background:#f8f7f4;padding:20px;border-radius:8px;margin-bottom:30px;border-left:4px solid #EAB308}h2{color:#333;font-size:16px;margin-top:30px;margin-bottom:15px;padding-bottom:5px;border-bottom:1px solid #ddd}.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;font-size:11px;color:#888;text-align:center}</style></head><body><h1>Scheda Tricologica</h1><p class="header-subtitle">Beautri S.R.L. — Centro Tricologico</p><div class="info-box"><p><strong>Cliente:</strong> ' + cognome + ' ' + nome + '</p><p><strong>Caso:</strong> ' + casoTipo + '</p><p><strong>Data compilazione:</strong> ' + timestamp + '</p></div><h2>Risposte Questionario</h2>' + (risposteHTML || '<p style="color:#888;">Nessuna risposta</p>') + '<h2>Selezioni Multiple</h2>' + (checkboxHTML || '<p style="color:#888;">Nessuna selezione</p>') + '<h2>Tipo di Incidenza</h2><p><span style="display:inline-block;background:#EAB308;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;">' + incidenzaTipo + '</span></p><h2>Patologie Riscontrate</h2><div>' + incidenzeBadges + '</div><h2>Dettaglio Incidenze</h2><div>' + incidenzeTabBadges + '</div><h2>Gravità per Zona</h2>' + (gravityHTML || '<p style="color:#888;">Nessuna gravità specificata</p>') + '<div class="footer">Documento generato automaticamente — ' + timestamp + '</div></body></html>';
+}
+ 
+async function inviaAlWebhook() {
+  const nome = S.answers['1_first'] || '';
+  const cognome = S.answers['1_last'] || '';
+  const htmlContent = generaHTMLPdf();
+  
+  const payload = {
+    nome: nome,
+    cognome: cognome,
+    filename: cognome + ' ' + nome + '.pdf',
+    folderId: GOOGLE_DRIVE_FOLDER_ID,
+    html: htmlContent
+  };
   
   try {
     await fetch(WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dati)
+      body: JSON.stringify(payload)
     });
     console.log('Dati inviati con successo');
   } catch (err) {
@@ -1018,3 +1042,4 @@ render();
 </script>
 </body>
 </html>
+ 
