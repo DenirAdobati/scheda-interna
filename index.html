@@ -593,8 +593,9 @@ function selectCaso(tipo) {
 }
  
 // ═══════════════════════════════════════
-// INVIO WEBHOOK MAKE.COM
+// GENERAZIONE PDF E SALVATAGGIO
 // ═══════════════════════════════════════
+const HTML2PDF_API_KEY = 'kpmUzBuAUjJTxjjvYHB8DnzIwn6vh6ahcqbKoUCj8sU3X7qiQdyTwZYLltQedyLh';
 const WEBHOOK_URL = 'https://hook.eu1.make.com/vimfczhe9gltxk7kokg69jdonoq6pltu';
 const GOOGLE_DRIVE_FOLDER_ID = '1ZytpAyYBCddOK5UFaNm_x0FK93-voRR9';
  
@@ -605,7 +606,6 @@ function generaHTMLPdf() {
   const casoTipo = S.casoTipo || '';
   const incidenzaTipo = S.answers['incid_tipo'] || 'Non specificato';
   
-  // Raccogli risposte
   const tutteDomande = [...Q_CONOSCITIVA, ...Q_INDAGINE, ...Q_UOMO, ...Q_DONNA, ...Q_MAMMA, ...Q_MENOPAUSA, ...Q_VISIVA];
   let risposteHTML = '';
   let checkboxHTML = '';
@@ -619,19 +619,16 @@ function generaHTMLPdf() {
     }
   });
   
-  // Gravità
   let gravityHTML = '';
   Object.entries(S.gravity).forEach(([zona, val]) => {
     const pct = (val + 1) * 20;
     gravityHTML += '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:#fafafa;margin-bottom:5px;border-radius:4px;"><span>' + zona + '</span><div style="width:100px;height:8px;background:#e5e5e5;border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:#EAB308;"></div></div></div>';
   });
   
-  // Incidenze
   const incidenze = Array.from(S.incidenze);
   let incidenzeBadges = incidenze.map(i => '<span style="display:inline-block;background:#EAB308;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;margin:3px;">' + i + '</span>').join('');
   if (!incidenzeBadges) incidenzeBadges = '<span style="color:#888;">Nessuna</span>';
   
-  // Incidenze Tab
   const incidenzeTab = Array.from(S.incidenzeTab);
   let incidenzeTabBadges = incidenzeTab.map(i => '<span style="display:inline-block;background:transparent;border:1px solid #EAB308;color:#333;padding:3px 10px;border-radius:12px;font-size:12px;margin:3px;">' + i + '</span>').join('');
   if (!incidenzeTabBadges) incidenzeTabBadges = '<span style="color:#888;">Nessuna</span>';
@@ -643,24 +640,50 @@ async function inviaAlWebhook() {
   const nome = S.answers['1_first'] || '';
   const cognome = S.answers['1_last'] || '';
   const htmlContent = generaHTMLPdf();
-  
-  const payload = {
-    nome: nome,
-    cognome: cognome,
-    filename: cognome + ' ' + nome + '.pdf',
-    folderId: GOOGLE_DRIVE_FOLDER_ID,
-    html: htmlContent
-  };
+  const filename = cognome + ' ' + nome + '.pdf';
   
   try {
+    // 1. Genera PDF con html2pdf.app
+    const pdfResponse = await fetch('https://api.html2pdf.app/v1/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apiKey: HTML2PDF_API_KEY,
+        html: htmlContent,
+        format: 'A4',
+        marginTop: 20,
+        marginBottom: 20,
+        marginLeft: 20,
+        marginRight: 20
+      })
+    });
+    
+    if (!pdfResponse.ok) {
+      throw new Error('Errore generazione PDF: ' + pdfResponse.status);
+    }
+    
+    // 2. Converti PDF in base64
+    const pdfBlob = await pdfResponse.blob();
+    const pdfBase64 = await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result.split(',')[1]);
+      reader.readAsDataURL(pdfBlob);
+    });
+    
+    // 3. Invia a Make.com per salvare su Google Drive
     await fetch(WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        filename: filename,
+        folderId: GOOGLE_DRIVE_FOLDER_ID,
+        pdfBase64: pdfBase64
+      })
     });
-    console.log('Dati inviati con successo');
+    
+    console.log('PDF generato e inviato con successo');
   } catch (err) {
-    console.error('Errore invio webhook:', err);
+    console.error('Errore:', err);
   }
 }
  
