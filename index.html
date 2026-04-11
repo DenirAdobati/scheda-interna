@@ -250,6 +250,32 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
 .btn-gold { padding:14px 30px; background:var(--gold); border:none; border-radius:var(--radius-sm); font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:var(--black); cursor:pointer; }
 .btn-dark { padding:14px 30px; background:var(--black); border:none; border-radius:var(--radius-sm); font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:#fff; cursor:pointer; }
  
+/* ── TOAST / FEEDBACK ── */
+.toast-overlay {
+  position:fixed; top:0; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,.6); backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center;
+  z-index:9999; opacity:0; pointer-events:none;
+  transition:opacity .25s;
+}
+.toast-overlay.show { opacity:1; pointer-events:auto; }
+.toast-box {
+  background:#fff; border-radius:20px; padding:36px 32px;
+  text-align:center; max-width:320px; width:90%;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+  transform:scale(.9); transition:transform .25s;
+}
+.toast-overlay.show .toast-box { transform:scale(1); }
+.toast-icon { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; font-size:28px; }
+.toast-icon.loading { background:#EAB308; animation:pulse 1.2s infinite; }
+.toast-icon.success { background:#22C55E; }
+.toast-icon.error { background:#EF4444; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.7;transform:scale(.95);} }
+.toast-title { font-size:18px; font-weight:700; margin-bottom:8px; color:#111827; }
+.toast-msg { font-size:14px; color:#6B7280; line-height:1.5; }
+.toast-btn { margin-top:20px; padding:12px 28px; background:#111827; border:none; border-radius:10px; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; color:#fff; cursor:pointer; }
+.toast-btn:active { transform:scale(.97); }
+ 
 /* ── FOOTER NAV ── */
 .nav-footer { position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,.95); backdrop-filter:blur(12px); border-top:1px solid var(--border); padding:13px 18px 20px; z-index:100; }
 .nav-inner  { display:flex; gap:9px; max-width:660px; margin:0 auto; }
@@ -289,6 +315,16 @@ textarea { min-height:100px; resize:vertical; font-size:14px; }
       <button class="btn-next" id="btnNext" onclick="goNext()">Avanti →</button>
     </div>
   </footer>
+  
+  <!-- Toast Overlay -->
+  <div class="toast-overlay" id="toastOverlay">
+    <div class="toast-box">
+      <div class="toast-icon" id="toastIcon">⏳</div>
+      <div class="toast-title" id="toastTitle">Generazione in corso...</div>
+      <div class="toast-msg" id="toastMsg">Stiamo salvando la scheda tricologica.</div>
+      <button class="toast-btn" id="toastBtn" style="display:none" onclick="hideToast()">OK</button>
+    </div>
+  </div>
 </div>
  
 <script>
@@ -599,6 +635,168 @@ const HTML2PDF_API_KEY = 'kpmUzBuAUjJTxjjvYHB8DnzIwn6vh6ahcqbKoUCj8sU3X7qiQdyTwZ
 const WEBHOOK_URL = 'https://hook.eu1.make.com/vimfczhe9gltxk7kokg69jdonoq6pltu';
 const GOOGLE_DRIVE_FOLDER_ID = '1ZytpAyYBCddOK5UFaNm_x0FK93-voRR9';
  
+// ═══════════════════════════════════════
+// TOAST FEEDBACK SYSTEM
+// ═══════════════════════════════════════
+function showToast(type, title, msg, showBtn = false) {
+  const overlay = document.getElementById('toastOverlay');
+  const icon = document.getElementById('toastIcon');
+  const titleEl = document.getElementById('toastTitle');
+  const msgEl = document.getElementById('toastMsg');
+  const btn = document.getElementById('toastBtn');
+  
+  icon.className = 'toast-icon ' + type;
+  icon.textContent = type === 'loading' ? '⏳' : type === 'success' ? '✓' : '✕';
+  titleEl.textContent = title;
+  msgEl.textContent = msg;
+  btn.style.display = showBtn ? 'inline-block' : 'none';
+  overlay.classList.add('show');
+}
+ 
+function hideToast() {
+  document.getElementById('toastOverlay').classList.remove('show');
+}
+ 
+// ═══════════════════════════════════════
+// ROBUST PDF GENERATION & UPLOAD
+// ═══════════════════════════════════════
+async function fetchWithTimeout(url, options, timeoutMs = 30000) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    throw err;
+  }
+}
+ 
+async function generaPdfBase64(htmlContent, retries = 3) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const pdfResponse = await fetchWithTimeout('https://api.html2pdf.app/v1/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apiKey: HTML2PDF_API_KEY,
+          html: htmlContent,
+          format: 'A4',
+          marginTop: 20,
+          marginBottom: 20,
+          marginLeft: 20,
+          marginRight: 20
+        })
+      }, 30000);
+      
+      if (!pdfResponse.ok) {
+        throw new Error('HTTP ' + pdfResponse.status);
+      }
+      
+      const pdfBlob = await pdfResponse.blob();
+      
+      // Verifica che il blob sia valido
+      if (!pdfBlob || pdfBlob.size < 1000) {
+        throw new Error('PDF vuoto o corrotto (' + (pdfBlob?.size || 0) + ' bytes)');
+      }
+      
+      // Converti in base64
+      const pdfBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const result = reader.result;
+          if (result && result.includes(',')) {
+            resolve(result.split(',')[1]);
+          } else {
+            reject(new Error('Conversione base64 fallita'));
+          }
+        };
+        reader.onerror = () => reject(new Error('FileReader error'));
+        reader.readAsDataURL(pdfBlob);
+      });
+      
+      // Verifica base64 valido
+      if (!pdfBase64 || pdfBase64.length < 100) {
+        throw new Error('Base64 non valido');
+      }
+      
+      return pdfBase64;
+      
+    } catch (err) {
+      console.warn('Tentativo ' + attempt + '/' + retries + ' fallito:', err.message);
+      if (attempt === retries) throw err;
+      // Attendi prima di riprovare (backoff esponenziale)
+      await new Promise(r => setTimeout(r, 1000 * attempt));
+    }
+  }
+}
+ 
+async function inviaAWebhook(filename, pdfBase64, retries = 2) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await fetchWithTimeout(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: filename,
+          folderId: GOOGLE_DRIVE_FOLDER_ID,
+          pdfBase64: pdfBase64
+        })
+      }, 20000);
+      
+      if (!response.ok) {
+        throw new Error('Webhook HTTP ' + response.status);
+      }
+      
+      return true;
+      
+    } catch (err) {
+      console.warn('Webhook tentativo ' + attempt + '/' + retries + ' fallito:', err.message);
+      if (attempt === retries) throw err;
+      await new Promise(r => setTimeout(r, 1000 * attempt));
+    }
+  }
+}
+ 
+async function inviaAlWebhook() {
+  const nome = S.answers['1_first'] || '';
+  const cognome = S.answers['1_last'] || '';
+  const filename = (cognome + ' ' + nome).trim() || 'Scheda';
+  const filenameClean = filename + '.pdf';
+  
+  showToast('loading', 'Generazione PDF...', 'Stiamo creando la scheda tricologica.');
+  
+  try {
+    // 1. Genera HTML
+    const htmlContent = generaHTMLPdf();
+    if (!htmlContent || htmlContent.length < 500) {
+      throw new Error('HTML non generato correttamente');
+    }
+    
+    // 2. Genera PDF con retry
+    showToast('loading', 'Generazione PDF...', 'Conversione in corso...');
+    const pdfBase64 = await generaPdfBase64(htmlContent);
+    
+    // 3. Invia a Make.com con retry
+    showToast('loading', 'Salvataggio...', 'Caricamento su Google Drive...');
+    await inviaAWebhook(filenameClean, pdfBase64);
+    
+    // 4. Successo!
+    showToast('success', 'Scheda salvata!', 'Il PDF è stato caricato su Google Drive.', true);
+    console.log('✓ PDF generato e salvato:', filenameClean);
+    
+  } catch (err) {
+    console.error('Errore completo:', err);
+    showToast('error', 'Errore', 'Si è verificato un problema: ' + err.message + '. Riprova.', true);
+    
+    // Non bloccare il flusso, l'utente può comunque vedere la scheda completata
+  }
+}
+ 
+// ═══════════════════════════════════════
+// GENERAZIONE HTML PER PDF
+// ═══════════════════════════════════════
 function generaHTMLPdf() {
   const nome = S.answers['1_first'] || '';
   const cognome = S.answers['1_last'] || '';
@@ -634,57 +832,6 @@ function generaHTMLPdf() {
   if (!incidenzeTabBadges) incidenzeTabBadges = '<span style="color:#888;">Nessuna</span>';
  
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Segoe UI,Arial,sans-serif;padding:40px;color:#1a1a1a;font-size:14px}h1{color:#EAB308;border-bottom:2px solid #EAB308;padding-bottom:10px;margin-bottom:30px;font-size:24px}.header-subtitle{color:#666;font-size:12px;margin-top:-25px;margin-bottom:30px}.info-box{background:#f8f7f4;padding:20px;border-radius:8px;margin-bottom:30px;border-left:4px solid #EAB308}h2{color:#333;font-size:16px;margin-top:30px;margin-bottom:15px;padding-bottom:5px;border-bottom:1px solid #ddd}.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;font-size:11px;color:#888;text-align:center}</style></head><body><h1>Scheda Tricologica</h1><p class="header-subtitle">Beautri S.R.L. — Centro Tricologico</p><div class="info-box"><p><strong>Cliente:</strong> ' + cognome + ' ' + nome + '</p><p><strong>Caso:</strong> ' + casoTipo + '</p><p><strong>Data compilazione:</strong> ' + timestamp + '</p></div><h2>Risposte Questionario</h2>' + (risposteHTML || '<p style="color:#888;">Nessuna risposta</p>') + '<h2>Selezioni Multiple</h2>' + (checkboxHTML || '<p style="color:#888;">Nessuna selezione</p>') + '<h2>Tipo di Incidenza</h2><p><span style="display:inline-block;background:#EAB308;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;">' + incidenzaTipo + '</span></p><h2>Patologie Riscontrate</h2><div>' + incidenzeBadges + '</div><h2>Dettaglio Incidenze</h2><div>' + incidenzeTabBadges + '</div><h2>Gravità per Zona</h2>' + (gravityHTML || '<p style="color:#888;">Nessuna gravità specificata</p>') + '<div class="footer">Documento generato automaticamente — ' + timestamp + '</div></body></html>';
-}
- 
-async function inviaAlWebhook() {
-  const nome = S.answers['1_first'] || '';
-  const cognome = S.answers['1_last'] || '';
-  const htmlContent = generaHTMLPdf();
-  const filename = cognome + ' ' + nome + '.pdf';
-  
-  try {
-    // 1. Genera PDF con html2pdf.app
-    const pdfResponse = await fetch('https://api.html2pdf.app/v1/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        apiKey: HTML2PDF_API_KEY,
-        html: htmlContent,
-        format: 'A4',
-        marginTop: 20,
-        marginBottom: 20,
-        marginLeft: 20,
-        marginRight: 20
-      })
-    });
-    
-    if (!pdfResponse.ok) {
-      throw new Error('Errore generazione PDF: ' + pdfResponse.status);
-    }
-    
-    // 2. Converti PDF in base64
-    const pdfBlob = await pdfResponse.blob();
-    const pdfBase64 = await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result.split(',')[1]);
-      reader.readAsDataURL(pdfBlob);
-    });
-    
-    // 3. Invia a Make.com per salvare su Google Drive
-    await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        filename: filename,
-        folderId: GOOGLE_DRIVE_FOLDER_ID,
-        pdfBase64: pdfBase64
-      })
-    });
-    
-    console.log('PDF generato e inviato con successo');
-  } catch (err) {
-    console.error('Errore:', err);
-  }
 }
  
 // ═══════════════════════════════════════
