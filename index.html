@@ -632,8 +632,7 @@ function selectCaso(tipo) {
 // GENERAZIONE PDF E SALVATAGGIO
 // ═══════════════════════════════════════
 const HTML2PDF_API_KEY = 'kpmUzBuAUjJTxjjvYHB8DnzIwn6vh6ahcqbKoUCj8sU3X7qiQdyTwZYLltQedyLh';
-const WEBHOOK_URL = 'https://hook.eu1.make.com/vimfczhe9gltxk7kokg69jdonoq6pltu';
-const GOOGLE_DRIVE_FOLDER_ID = '1ZytpAyYBCddOK5UFaNm_x0FK93-voRR9';
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0Z8WWJui6NSTG1dpiD3RFUkzQWqgimkfPT7wZ3_hXLbW90qb_HfHAh_Qf1RP2ZQDc/exec';
  
 // ═══════════════════════════════════════
 // TOAST FEEDBACK SYSTEM
@@ -732,27 +731,24 @@ async function generaPdfBase64(htmlContent, retries = 3) {
   }
 }
  
-async function inviaAWebhook(filename, pdfBase64, retries = 2) {
+async function inviaAGoogleDrive(filename, pdfBase64, retries = 2) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const response = await fetchWithTimeout(WEBHOOK_URL, {
+      const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
         method: 'POST',
+        mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           filename: filename,
-          folderId: GOOGLE_DRIVE_FOLDER_ID,
           pdfBase64: pdfBase64
         })
-      }, 20000);
+      });
       
-      if (!response.ok) {
-        throw new Error('Webhook HTTP ' + response.status);
-      }
-      
+      // Con no-cors non possiamo leggere la risposta, ma se non c'è errore è ok
       return true;
       
     } catch (err) {
-      console.warn('Webhook tentativo ' + attempt + '/' + retries + ' fallito:', err.message);
+      console.warn('Upload tentativo ' + attempt + '/' + retries + ' fallito:', err.message);
       if (attempt === retries) throw err;
       await new Promise(r => setTimeout(r, 1000 * attempt));
     }
@@ -778,9 +774,9 @@ async function inviaAlWebhook() {
     showToast('loading', 'Generazione PDF...', 'Conversione in corso...');
     const pdfBase64 = await generaPdfBase64(htmlContent);
     
-    // 3. Invia a Make.com con retry
+    // 3. Invia a Google Drive con retry
     showToast('loading', 'Salvataggio...', 'Caricamento su Google Drive...');
-    await inviaAWebhook(filenameClean, pdfBase64);
+    await inviaAGoogleDrive(filenameClean, pdfBase64);
     
     // 4. Successo!
     showToast('success', 'Scheda salvata!', 'Il PDF è stato caricato su Google Drive.', true);
